@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Daily English SRS</title>
+    <style>
+        :root {
+            --primary: #007AFF;
+            --bg: #F2F2F7;
+            --card-bg: #FFFFFF;
+            --text: #000000;
+            --red: #FF3B30;
+            --green: #34C759;
+            --orange: #FF9500;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: var(--text);
+        }
+
+        /* --- TOPO: CATEGORIAS --- */
+        .header {
+            background: rgba(242, 242, 247, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px 15px 10px 15px;
+            border-bottom: 1px solid #ccc;
+            z-index: 10;
+        }
+
+        .cat-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 5px;
+        }
+        .cat-scroll::-webkit-scrollbar { display: none; }
+
+        .cat-chip {
+            background: #E5E5EA;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            color: #333;
+            border: 1px solid transparent;
+        }
+        .cat-chip.active {
+            background: #000;
+            color: white;
+        }
+
+        /* --- ÁREA DE CONTEÚDO --- */
+        .view-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 100px; /* Espaço menu */
+        }
+
+        /* --- ESTILO DOS CARDS (FEED) --- */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            position: relative;
+            border-left: 5px solid transparent;
+        }
+        
+        .card.hard-mode {
+            border-left: 5px solid var(--red);
+        }
+
+        .card-header-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px;
+        }
+        .card-cat { font-size: 10px; font-weight: 800; color: #999; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .toggle-hard-btn {
+            background: none; border: none; font-size: 12px; color: #ccc;
+        }
+        .card.hard-mode .toggle-hard-btn { color: var(--red); font-weight: bold; }
+
+        .en-text { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 10px; line-height: 1.2; }
+        .pt-text { font-size: 18px; color: #333; margin-bottom: 15px; font-weight: 500; }
+        
+        .ctx-box {
+            background: #f9f9f9; padding: 12px; border-radius: 10px;
+            font-size: 13px; color: #555; line-height: 1.4; margin-bottom: 15px;
+        }
+
+        /* Post-its (Exemplos) */
+        .post-it-container {
+            display: flex; flex-direction: column; gap: 8px; margin-top: 10px;
+        }
+        .post-it {
+            background: #FFF8E1; /* Amarelo Post-it */
+            border-left: 3px solid #FFC107;
+            padding: 10px; border-radius: 6px;
+            font-size: 13px; font-family: monospace; color: #444;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* Botões do Card */
+        .card-actions {
+            display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;
+        }
+        .act-btn {
+            background: #F0F0F5; border: none; border-radius: 15px;
+            padding: 8px 14px; font-size: 13px; font-weight: 600; color: #333;
+            display: flex; align-items: center; gap: 5px; cursor: pointer;
+        }
+        .act-btn:active { opacity: 0.7; }
+
+        /* Botão Gerar (Estilo Botão Preto) */
+        .gen-btn {
+            background: #000; color: white; width: 100%; border: none;
+            padding: 18px; border-radius: 18px; font-size: 16px; font-weight: 700;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin-bottom: 30px;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+
+        /* --- TELA DE REVISÃO (SRS) --- */
+        .review-mode-container {
+            height: 100%; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center;
+        }
+        
+        .flashcard {
+            background: white; width: 90%; max-width: 350px;
+            padding: 40px 20px; border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-height: 300px; display: flex; flex-direction: column; justify-content: center;
+        }
+        
+        .hidden-content { display: none; margin-top: 20px; animation: fadeIn 0.3s; }
+        .hidden-content.visible { display: block; }
+        
+        .srs-btns {
+            display: flex; gap: 10px; justify-content: center; margin-top: 25px;
+        }
+        .srs-btn {
+            padding: 15px 0; width: 100px; border-radius: 15px; border: none;
+            font-weight: bold; color: white; font-size: 14px;
+        }
+        
+        /* --- MENU INFERIOR --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid #ccc; display: flex; height: 80px;
+            justify-content: space-around; padding-top: 10px; z-index: 100;
+        }
+        .nav-item {
+            background: none; border: none; color: #999;
+            font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .nav-item.active { color: var(--primary); }
+        .badge {
+            background: var(--red); color: white; font-size: 10px; 
+            padding: 2px 6px; border-radius: 10px; position: absolute; margin-top: -5px; margin-left: 15px;
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6); z-index: 200;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.2s;
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal { background: white; width: 85%; max-width: 320px; border-radius: 20px; padding: 20px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden { display: none !important; }
+
+    </style>
+</head>
+<body>
+
+    <div id="headerExplore" class="header">
+        <h2 style="margin:0 0 15px 0; font-size: 22px;">Meus Cards</h2>
+        <div class="cat-scroll">
+            <button class="cat-chip active" onclick="filterCat('all', this)">Todos</button>
+            <button class="cat-chip" onclick="filterCat('Relacionamento', this)">Relacionamento</button>
+            <button class="cat-chip" onclick="filterCat('Trabalho', this)">Trabalho</button>
+            <button class="cat-chip" onclick="filterCat('Viagens', this)">Viagens</button>
+            <button class="cat-chip" onclick="filterCat('Gírias', this)">Gírias</button>
+            <button class="cat-chip" onclick="filterCat('Casa', this)">Casa</button>
+            <button class="cat-chip" onclick="filterCat('Estudos', this)">Estudos</button>
+        </div>
+    </div>
+
+    <div id="viewExplore" class="view-container">
+        
+        <button class="gen-btn" onclick="generateCard()">
+            <span>✨</span> Gerar Nova Dica nesta Categoria
+        </button>
+
+        <div id="feedList">
+            <div style="text-align:center; color:#999; margin-top:40px;">Selecione uma categoria e gere cards!</div>
+        </div>
+    </div>
+
+    <div id="viewReview" class="view-container hidden" style="background:#ddd;">
+        <div class="review-mode-container" id="reviewContainer">
+            </div>
+    </div>
+
+    <div id="modalEx" class="modal-overlay">
+        <div class="modal">
+            <h3>Novo Exemplo</h3>
+            <div style="background:#f2f2f7; padding:15px; border-radius:10px; margin:15px 0; font-style:italic;" id="modalText">...</div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="cycleModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#ddd;">🔄 Outro</button>
+                <button onclick="speakModal()" style="padding:10px; border:none; border-radius:8px; background:#ddd;">🔊</button>
+            </div>
+            <button onclick="saveModal()" style="width:100%; margin-top:15px; background:black; color:white; padding:12px; border:none; border-radius:10px;">Salvar Post-it</button>
+            <button onclick="closeModal()" style="width:100%; margin-top:5px; background:none; color:red; padding:10px; border:none;">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" id="navExp" onclick="switchView('explore')">
+            <span style="font-size:24px;">🗂️</span>
+            <span>Explorar</span>
+        </button>
+        
+        <button class="nav-item" id="navRev" onclick="switchView('review')">
+            <span style="font-size:24px;">🧠</span>
+            <span>Revisar <span id="revBadge" class="badge hidden">0</span></span>
+        </button>
+    </div>
+
+    <script>
+        // --- BASE DE DADOS STATIC ---
+        const db = [
+            { id: 1, cat: "Casa", en: "That does it!", pt: "Agora chega!", ctx: "Quando acaba a paciência.", exs: ["That does it! No TV!", "If he calls, that does it."] },
+            { id: 2, cat: "Trabalho", en: "Let's call it a day", pt: "Vamos encerrar por hoje", ctx: "Fim do expediente.", exs: ["We are tired. Call it a day.", "Let's call it a day guys."] },
+            { id: 3, cat: "Viagens", en: "Check, please", pt: "A conta, por favor", ctx: "Pedir conta no restaurante.", exs: ["Waiter, check please.", "Ready to go? Check please."] },
+            { id: 4, cat: "Gírias", en: "No way!", pt: "Mentira! / Nem a pau!", ctx: "Surpresa ou negação.", exs: ["You won? No way!", "No way I'm eating that."] },
+            { id: 5, cat: "Relacionamento", en: "We need to talk", pt: "Precisamos conversar (DR)", ctx: "Prenúncio de problema.", exs: ["Can we meet? We need to talk.", "She said we need to talk."] },
+            { id: 6, cat: "Estudos", en: "My mind went blank", pt: "Deu um branco", ctx: "Esquecer tudo na hora.", exs: ["I saw the test and my mind went blank.", "Sorry, mind went blank."] },
+            { id: 7, cat: "Relacionamento", en: "He stood me up", pt: "Ele me deu um bolo", ctx: "Não apareceu no encontro.", exs: ["I waited but he stood me up.", "Don't stand me up."] },
+            { id: 8, cat: "Comida", en: "I'm starving", pt: "Tô morrendo de fome", ctx: "Muita fome.", exs: ["Let's eat, I'm starving.", "Are you starving?"] }
+        ];
+
+        // --- ESTADO DO APP ---
+        // userCards agora guarda: { ...dados, savedExs: [], nextReview: Timestamp, interval: dias, isHard: bool }
+        let userCards = JSON.parse(localStorage.getItem('englishSRS_v1')) || [];
+        let currentCat = 'all';
+        let reviewQueue = [];
+        let currentReviewIndex = 0;
+        let activeCardId = null; // Para o modal
+        let tempExample = "";
+
+        // --- INICIALIZAÇÃO ---
+        window.onload = () => {
+            updateReviewBadge();
+            renderFeed();
+        };
+
+        // --- LÓGICA DE EXPLORAÇÃO (FEED) ---
+        function filterCat(cat, btn) {
+            currentCat = cat;
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            renderFeed();
+        }
+
+        function generateCard() {
+            // Filtrar DB
+            let pool = db;
+            if(currentCat !== 'all') pool = db.filter(i => i.cat === currentCat);
+            
+            if(pool.length === 0) {
+                alert("Nenhuma frase disponível no banco para esta categoria.");
+                return;
+            }
+
+            const item = pool[Math.floor(Math.random() * pool.length)];
+
+            // Criar novo Card de Usuário
+            const newCard = {
+                uid: Date.now().toString(),
+                id: item.id,
+                cat: item.cat,
+                en: item.en,
+                pt: item.pt,
+                ctx: item.ctx,
+                savedExs: [],
+                // SRS DATA
+                nextReview: Date.now(), // Revisar hoje
+                interval: 1, // Começa com 1 dia
+                isHard: false
+            };
+
+            userCards.unshift(newCard); // Adiciona no topo
+            saveData();
+            renderFeed();
+            updateReviewBadge();
+        }
+
+        function renderFeed() {
+            const feed = document.getElementById('feedList');
+            feed.innerHTML = '';
+
+            const filtered = currentCat === 'all' ? userCards : userCards.filter(c => c.cat === currentCat);
+
+            if(filtered.length === 0) {
+                feed.innerHTML = '<div style="text-align:center; color:#999; margin-top:30px;">Nada salvo aqui ainda.<br>Clique no botão preto acima!</div>';
+                return;
+            }
+
+            filtered.forEach(card => {
+                // Post-its HTML
+                const exsHTML = card.savedExs.map(ex => `
+                    <div class="post-it">
+                        <span>📝 ${ex}</span>
+                        <button onclick="speak('${ex.replace(/'/g, "\\'")}')" style="border:none; bg:none;">🔊</button>
+                    </div>
+                `).join('');
+
+                const html = `
+                    <div class="card ${card.isHard ? 'hard-mode' : ''}">
+                        <div class="card-header-row">
+                            <span class="card-cat">${card.cat}</span>
+                            <button class="toggle-hard-btn" onclick="toggleHard('${card.uid}')">
+                                ${card.isHard ? '★ DIFÍCIL' : '☆ Marcar Difícil'}
+                            </button>
+                        </div>
+
+                        <div class="en-text">${card.en}</div>
+                        <div class="pt-text">${card.pt}</div>
+                        
+                        <div class="ctx-box">
+                            <strong>Contexto:</strong> ${card.ctx}
+                        </div>
+
+                        <div class="post-it-container">
+                            ${exsHTML}
+                        </div>
+
+                        <div class="card-actions">
+                            <button class="act-btn" onclick="speak('${card.en.replace(/'/g, "\\'")}')">🔊 Ouvir</button>
+                            <button class="act-btn" onclick="openModal('${card.uid}')">➕ Post-it Exemplo</button>
+                            <button class="act-btn" style="color:red; margin-left:auto;" onclick="deleteCard('${card.uid}')">🗑️</button>
+                        </div>
+                    </div>
+                `;
+                feed.innerHTML += html;
+            });
+        }
+
+        function toggleHard(uid) {
+            const card = userCards.find(c => c.uid === uid);
+            if(card) {
+                card.isHard = !card.isHard;
+                // Se marcou difícil, reseta intervalo pra 1 dia
+                if(card.isHard) {
+                    card.interval = 1;
+                    card.nextReview = Date.now(); 
+                }
+                saveData();
+                renderFeed();
+                updateReviewBadge();
+            }
+        }
+
+        // --- LÓGICA DE REVISÃO (SRS) ---
+        function startReview() {
+            // Pegar cards vencidos
+            const now = Date.now();
+            reviewQueue = userCards.filter(c => c.nextReview <= now);
+            currentReviewIndex = 0;
+            renderReviewCard();
+        }
+
+        function renderReviewCard() {
+            const container = document.getElementById('reviewContainer');
+            
+            if(reviewQueue.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center;">
+                        <div style="font-size:50px;">🎉</div>
+                        <h2>Tudo em dia!</h2>
+                        <p>Você revisou todos os cards pendentes.</p>
+                        <button onclick="switchView('explore')" class="act-btn" style="margin:20px auto;">Voltar</button>
+                    </div>
+                `;
+                return;
+            }
+
+            if(currentReviewIndex >= reviewQueue.length) {
+                container.innerHTML = `
+                    <div style="text-align:center;">
+                        <h2>Sessão Concluída!</h2>
+                        <p>Volte amanhã para mais.</p>
+                        <button onclick="switchView('explore')" class="act-btn" style="margin:20px auto;">Voltar</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const card = reviewQueue[currentReviewIndex];
+            
+            container.innerHTML = `
+                <div class="flashcard">
+                    <span style="font-size:12px; color:#999; text-transform:uppercase;">${card.cat}</span>
+                    <h2 style="font-size:28px; color:var(--primary); margin:20px 0;">${card.en}</h2>
+                    <button class="act-btn" style="margin:0 auto;" onclick="speak('${card.en.replace(/'/g, "\\'")}')">🔊 Ouvir</button>
+                    
+                    <button id="revealBtn" onclick="document.getElementById('hiddenArea').classList.add('visible'); this.style.display='none';" style="margin-top:40px; background:black; color:white; padding:15px; border:none; border-radius:15px; width:100%; font-weight:bold;">
+                        👁️ Mostrar Resposta
+                    </button>
+
+                    <div id="hiddenArea" class="hidden-content">
+                        <div style="font-size:20px; font-weight:500; margin-bottom:10px;">${card.pt}</div>
+                        <div style="color:#666; font-size:14px;">${card.ctx}</div>
+                        
+                        <div class="srs-btns">
+                            <button class="srs-btn" style="background:var(--red);" onclick="processSRS('hard')">Difícil 🥵</button>
+                            <button class="srs-btn" style="background:var(--green);" onclick="processSRS('easy')">Fácil 😎</button>
+                        </div>
+                    </div>
+                </div>
+                <p style="margin-top:20px; color:#666;">Card ${currentReviewIndex + 1} de ${reviewQueue.length}</p>
+            `;
+        }
+
+        function processSRS(difficulty) {
+            const card = reviewQueue[currentReviewIndex];
+            const realCard = userCards.find(c => c.uid === card.uid); // Pega referência original
+
+            if (difficulty === 'hard') {
+                // Difícil: Reseta para 1 dia (ou mantém curto)
+                realCard.interval = 1;
+                realCard.isHard = true; 
+            } else {
+                // Fácil: Multiplica intervalo (x2)
+                realCard.interval = Math.ceil(realCard.interval * 2);
+                realCard.isHard = false; // Tira flag de difícil se acertou
+            }
+
+            // Define próxima data: Agora + Dias
+            realCard.nextReview = Date.now() + (realCard.interval * 24 * 60 * 60 * 1000);
+            
+            saveData();
+            currentReviewIndex++;
+            renderReviewCard();
+            updateReviewBadge();
+        }
+
+        function updateReviewBadge() {
+            const now = Date.now();
+            const count = userCards.filter(c => c.nextReview <= now).length;
+            const badge = document.getElementById('revBadge');
+            if(count > 0) {
+                badge.innerText = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+
+        // --- UTILITÁRIOS E MODAIS ---
+        function openModal(uid) {
+            activeCardId = uid;
+            document.getElementById('modalEx').classList.add('show');
+            cycleModal();
+        }
+        
+        function cycleModal() {
+            if(!activeCardId) return;
+            const card = userCards.find(c => c.uid === activeCardId);
+            const dbItem = db.find(i => i.id === card.id);
+            const rand = dbItem.exs[Math.floor(Math.random() * dbItem.exs.length)];
+            tempExample = rand;
+            document.getElementById('modalText').innerText = `"${rand}"`;
+        }
+
+        function speakModal() { speak(tempExample); }
+
+        function saveModal() {
+            const card = userCards.find(c => c.uid === activeCardId);
+            if(card) {
+                card.savedExs.push(tempExample);
+                saveData();
+                renderFeed();
+                closeModal();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modalEx').classList.remove('show');
+            activeCardId = null;
+        }
+
+        function deleteCard(uid) {
+            if(confirm("Apagar este card?")) {
+                userCards = userCards.filter(c => c.uid !== uid);
+                saveData();
+                renderFeed();
+                updateReviewBadge();
+            }
+        }
+
+        function speak(text) {
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            window.speechSynthesis.speak(u);
+        }
+
+        function saveData() {
+            localStorage.setItem('englishSRS_v1', JSON.stringify(userCards));
+        }
+
+        function switchView(view) {
+            if(view === 'explore') {
+                document.getElementById('viewExplore').classList.remove('hidden');
+                document.getElementById('headerExplore').classList.remove('hidden');
+                document.getElementById('viewReview').classList.add('hidden');
+                document.getElementById('navExp').classList.add('active');
+                document.getElementById('navRev').classList.remove('active');
+                renderFeed(); // Atualiza caso tenha mudado algo na revisão
+            } else {
+                document.getElementById('viewExplore').classList.add('hidden');
+                document.getElementById('headerExplore').classList.add('hidden');
+                document.getElementById('viewReview').classList.remove('hidden');
+                document.getElementById('navExp').classList.remove('active');
+                document.getElementById('navRev').classList.add('active');
+                startReview();
+            }
+        }
+
+    </script>
+</body>
+</html>
