@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Daily English SRS</title>
+    <title>Daily English Pro</title>
     <style>
         :root {
             --primary: #007AFF;
@@ -12,7 +12,7 @@
             --text: #000000;
             --red: #FF3B30;
             --green: #34C759;
-            --orange: #FF9500;
+            --yellow: #FFCC00;
         }
 
         body {
@@ -27,15 +27,39 @@
             color: var(--text);
         }
 
-        /* --- TOPO: CATEGORIAS --- */
+        /* HEADER & CONTROLES */
         .header {
             background: rgba(242, 242, 247, 0.95);
             backdrop-filter: blur(10px);
             padding: 40px 15px 10px 15px;
             border-bottom: 1px solid #ccc;
             z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* SEARCH BAR */
+        .search-container {
+            width: 100%;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            background: #E5E5EA;
+            font-size: 14px;
+            box-sizing: border-box; /* Garante que padding não estoure a largura */
+            outline: none;
+        }
+        .search-input:focus { background: #fff; border-color: var(--primary); }
+
+        /* SCROLL CATEGORIAS */
         .cat-scroll {
             display: flex;
             gap: 10px;
@@ -54,21 +78,23 @@
             white-space: nowrap;
             color: #333;
             border: 1px solid transparent;
+            transition: 0.2s;
         }
         .cat-chip.active {
             background: #000;
             color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        /* --- ÁREA DE CONTEÚDO --- */
+        /* ÁREA DE CONTEÚDO */
         .view-container {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            padding-bottom: 100px; /* Espaço menu */
+            padding-bottom: 120px;
         }
 
-        /* --- ESTILO DOS CARDS (FEED) --- */
+        /* FEED DE CARDS */
         .card {
             background: white;
             border-radius: 20px;
@@ -77,15 +103,25 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.06);
             position: relative;
             border-left: 5px solid transparent;
+            transition: transform 0.2s;
         }
         
-        .card.hard-mode {
-            border-left: 5px solid var(--red);
+        .card.hard-mode { border-left: 5px solid var(--red); }
+
+        /* NUMERAÇÃO DO CARD */
+        .card-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 11px;
+            color: #ccc;
+            font-weight: 600;
         }
 
         .card-header-row {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 10px;
+            padding-right: 30px; /* Espaço para o número */
         }
         .card-cat { font-size: 10px; font-weight: 800; color: #999; text-transform: uppercase; letter-spacing: 1px; }
         
@@ -102,19 +138,19 @@
             font-size: 13px; color: #555; line-height: 1.4; margin-bottom: 15px;
         }
 
-        /* Post-its (Exemplos) */
+        /* POST-ITS */
         .post-it-container {
             display: flex; flex-direction: column; gap: 8px; margin-top: 10px;
         }
         .post-it {
-            background: #FFF8E1; /* Amarelo Post-it */
+            background: #FFF8E1;
             border-left: 3px solid #FFC107;
             padding: 10px; border-radius: 6px;
             font-size: 13px; font-family: monospace; color: #444;
             display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* Botões do Card */
+        /* AÇÕES DO CARD */
         .card-actions {
             display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;
         }
@@ -125,39 +161,41 @@
         }
         .act-btn:active { opacity: 0.7; }
 
-        /* Botão Gerar (Estilo Botão Preto) */
+        /* BOTÃO GERAR */
         .gen-btn {
             background: #000; color: white; width: 100%; border: none;
             padding: 18px; border-radius: 18px; font-size: 16px; font-weight: 700;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin-bottom: 30px;
             display: flex; justify-content: center; align-items: center; gap: 8px;
         }
+        .gen-btn:active { transform: scale(0.98); }
 
-        /* --- TELA DE REVISÃO (SRS) --- */
+        /* BACKUP AREA */
+        .backup-area {
+            margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center;
+        }
+        .backup-btn {
+            background: #E5E5EA; color: #333; border: 1px solid #ccc;
+            padding: 10px 20px; border-radius: 10px; font-size: 12px; margin: 0 5px; cursor: pointer;
+        }
+
+        /* SRS MODE */
         .review-mode-container {
             height: 100%; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; text-align: center;
         }
-        
         .flashcard {
             background: white; width: 90%; max-width: 350px;
             padding: 40px 20px; border-radius: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             min-height: 300px; display: flex; flex-direction: column; justify-content: center;
         }
-        
         .hidden-content { display: none; margin-top: 20px; animation: fadeIn 0.3s; }
         .hidden-content.visible { display: block; }
+        .srs-btns { display: flex; gap: 10px; justify-content: center; margin-top: 25px; }
+        .srs-btn { padding: 15px 0; width: 100px; border-radius: 15px; border: none; font-weight: bold; color: white; font-size: 14px; }
         
-        .srs-btns {
-            display: flex; gap: 10px; justify-content: center; margin-top: 25px;
-        }
-        .srs-btn {
-            padding: 15px 0; width: 100px; border-radius: 15px; border: none;
-            font-weight: bold; color: white; font-size: 14px;
-        }
-        
-        /* --- MENU INFERIOR --- */
+        /* NAVBAR */
         .bottom-nav {
             position: fixed; bottom: 0; width: 100%;
             background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
@@ -174,7 +212,7 @@
             padding: 2px 6px; border-radius: 10px; position: absolute; margin-top: -5px; margin-left: 15px;
         }
 
-        /* --- MODAL --- */
+        /* MODAL */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.6); z-index: 200;
@@ -192,30 +230,47 @@
 <body>
 
     <div id="headerExplore" class="header">
-        <h2 style="margin:0 0 15px 0; font-size: 22px;">Meus Cards</h2>
+        <div class="header-top">
+            <h2 style="margin:0; font-size: 22px;">Meus Cards</h2>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar expressão..." onkeyup="handleSearch(this.value)">
+        </div>
+
         <div class="cat-scroll">
             <button class="cat-chip active" onclick="filterCat('all', this)">Todos</button>
             <button class="cat-chip" onclick="filterCat('Relacionamento', this)">Relacionamento</button>
+            <button class="cat-chip" onclick="filterCat('Família', this)">Família</button>
+            <button class="cat-chip" onclick="filterCat('Objetos', this)">Objetos</button>
+            <button class="cat-chip" onclick="filterCat('Lugares', this)">Lugares</button>
             <button class="cat-chip" onclick="filterCat('Trabalho', this)">Trabalho</button>
-            <button class="cat-chip" onclick="filterCat('Viagens', this)">Viagens</button>
-            <button class="cat-chip" onclick="filterCat('Gírias', this)">Gírias</button>
-            <button class="cat-chip" onclick="filterCat('Casa', this)">Casa</button>
             <button class="cat-chip" onclick="filterCat('Estudos', this)">Estudos</button>
+            <button class="cat-chip" onclick="filterCat('Eleições', this)">Eleições</button>
+            <button class="cat-chip" onclick="filterCat('Economia', this)">Economia</button>
         </div>
     </div>
 
     <div id="viewExplore" class="view-container">
         
         <button class="gen-btn" onclick="generateCard()">
-            <span>✨</span> Gerar Nova Dica nesta Categoria
+            <span>✨</span> Gerar Nova (Sem Repetir)
         </button>
 
         <div id="feedList">
-            <div style="text-align:center; color:#999; margin-top:40px;">Selecione uma categoria e gere cards!</div>
+            <div style="text-align:center; color:#999; margin-top:40px;">Carregando...</div>
         </div>
+
+        <div class="backup-area">
+            <p style="font-size:10px; color:#999; margin-bottom:10px;">GERENCIAR DADOS</p>
+            <button class="backup-btn" onclick="backupData()">⬇️ Fazer Backup</button>
+            <button class="backup-btn" onclick="document.getElementById('restoreFile').click()">⬆️ Restaurar</button>
+            <input type="file" id="restoreFile" style="display:none;" onchange="restoreData(this)">
+        </div>
+
     </div>
 
-    <div id="viewReview" class="view-container hidden" style="background:#ddd;">
+    <div id="viewReview" class="view-container hidden" style="background:#f0f0f5;">
         <div class="review-mode-container" id="reviewContainer">
             </div>
     </div>
@@ -223,12 +278,13 @@
     <div id="modalEx" class="modal-overlay">
         <div class="modal">
             <h3>Novo Exemplo</h3>
+            <p style="font-size:12px; color:#666;">Exemplo gerado para contexto adicional:</p>
             <div style="background:#f2f2f7; padding:15px; border-radius:10px; margin:15px 0; font-style:italic;" id="modalText">...</div>
             <div style="display:flex; gap:10px;">
                 <button onclick="cycleModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#ddd;">🔄 Outro</button>
                 <button onclick="speakModal()" style="padding:10px; border:none; border-radius:8px; background:#ddd;">🔊</button>
             </div>
-            <button onclick="saveModal()" style="width:100%; margin-top:15px; background:black; color:white; padding:12px; border:none; border-radius:10px;">Salvar Post-it</button>
+            <button onclick="saveModal()" style="width:100%; margin-top:15px; background:black; color:white; padding:12px; border:none; border-radius:10px; font-weight:bold;">Salvar Post-it</button>
             <button onclick="closeModal()" style="width:100%; margin-top:5px; background:none; color:red; padding:10px; border:none;">Cancelar</button>
         </div>
     </div>
@@ -246,54 +302,130 @@
     </div>
 
     <script>
-        // --- BASE DE DADOS STATIC ---
+        // --- BANCO DE DADOS (Expandido) ---
         const db = [
-            { id: 1, cat: "Casa", en: "That does it!", pt: "Agora chega!", ctx: "Quando acaba a paciência.", exs: ["That does it! No TV!", "If he calls, that does it."] },
-            { id: 2, cat: "Trabalho", en: "Let's call it a day", pt: "Vamos encerrar por hoje", ctx: "Fim do expediente.", exs: ["We are tired. Call it a day.", "Let's call it a day guys."] },
-            { id: 3, cat: "Viagens", en: "Check, please", pt: "A conta, por favor", ctx: "Pedir conta no restaurante.", exs: ["Waiter, check please.", "Ready to go? Check please."] },
-            { id: 4, cat: "Gírias", en: "No way!", pt: "Mentira! / Nem a pau!", ctx: "Surpresa ou negação.", exs: ["You won? No way!", "No way I'm eating that."] },
-            { id: 5, cat: "Relacionamento", en: "We need to talk", pt: "Precisamos conversar (DR)", ctx: "Prenúncio de problema.", exs: ["Can we meet? We need to talk.", "She said we need to talk."] },
-            { id: 6, cat: "Estudos", en: "My mind went blank", pt: "Deu um branco", ctx: "Esquecer tudo na hora.", exs: ["I saw the test and my mind went blank.", "Sorry, mind went blank."] },
-            { id: 7, cat: "Relacionamento", en: "He stood me up", pt: "Ele me deu um bolo", ctx: "Não apareceu no encontro.", exs: ["I waited but he stood me up.", "Don't stand me up."] },
-            { id: 8, cat: "Comida", en: "I'm starving", pt: "Tô morrendo de fome", ctx: "Muita fome.", exs: ["Let's eat, I'm starving.", "Are you starving?"] }
+            // RELACIONAMENTO
+            { id: 101, cat: "Relacionamento", en: "We need to talk", pt: "Precisamos conversar (DR)", ctx: "Geralmente indica notícias ruins ou término.", exs: ["Can you come over? We need to talk.", "She sent a text: 'we need to talk'."] },
+            { id: 102, cat: "Relacionamento", en: "He stood me up", pt: "Ele me deu um bolo", ctx: "Quando alguém não aparece no encontro marcado.", exs: ["I waited for an hour but he stood me up.", "Don't stand me up again."] },
+            { id: 103, cat: "Relacionamento", en: "I have a crush on her", pt: "Tenho uma queda por ela", ctx: "Estar interessado romanticamente em alguém.", exs: ["Everybody knows he has a crush on the teacher.", "It's just a silly crush."] },
+            { id: 104, cat: "Relacionamento", en: "We hit it off", pt: "Nos demos bem de cara", ctx: "Quando a conexão é imediata no primeiro encontro.", exs: ["We met at the party and really hit it off.", "I didn't think we would hit it off."] },
+            { id: 105, cat: "Relacionamento", en: "Third wheel", pt: "Segurar vela", ctx: "Ser a pessoa sobrando num casal.", exs: ["I don't want to go to the movies and be a third wheel.", "Being a third wheel is awkward."] },
+            { id: 106, cat: "Relacionamento", en: "Ghosting", pt: "Sumir (dar um vácuo eterno)", ctx: "Parar de responder mensagens repentinamente.", exs: ["I thought he liked me, but he is ghosting me.", "Ghosting is so immature."] },
+
+            // FAMÍLIA
+            { id: 201, cat: "Família", en: "Like father, like son", pt: "Tal pai, tal filho", ctx: "Similaridade de comportamento ou aparência.", exs: ["He is stubborn. Like father, like son.", "They both assume the same pose. Like father, like son."] },
+            { id: 202, cat: "Família", en: "I was raised in...", pt: "Eu fui criado em...", ctx: "Falar sobre onde cresceu/foi educado.", exs: ["I was raised in Texas.", "She was raised by her aunt."] },
+            { id: 203, cat: "Família", en: "Black sheep", pt: "Ovelha negra", ctx: "O membro diferente ou problemático da família.", exs: ["He is the black sheep of the family.", "Every family has a black sheep."] },
+            { id: 204, cat: "Família", en: "Runs in the family", pt: "É de família (genético)", ctx: "Característica comum a todos os parentes.", exs: ["Diabetes runs in the family.", "Red hair runs in the family."] },
+            { id: 205, cat: "Família", en: "Look after", pt: "Cuidar de (alguém)", ctx: "Tomar conta de crianças ou idosos.", exs: ["Can you look after my son tonight?", "I have to look after my grandma."] },
+
+            // OBJETOS
+            { id: 301, cat: "Objetos", en: "Power strip", pt: "Régua / Extensão", ctx: "Dispositivo com várias tomadas.", exs: ["Plug the computer into the power strip.", "The power strip is overloaded."] },
+            { id: 302, cat: "Objetos", en: "Coaster", pt: "Porta-copos", ctx: "Aquele apoio para não manchar a mesa.", exs: ["Please use a coaster.", "Pass me a coaster for my beer."] },
+            { id: 303, cat: "Objetos", en: "Clothespin", pt: "Pregador de roupa", ctx: "Usado para prender roupa no varal.", exs: ["We need more clothespins.", "Hold this with a clothespin."] },
+            { id: 304, cat: "Objetos", en: "The remote is dead", pt: "O controle acabou a pilha", ctx: "Diz-se que eletrônicos 'morreram' quando acaba a energia.", exs: ["My phone is dead.", "Is the remote dead again?"] },
+            { id: 305, cat: "Objetos", en: "Plunger", pt: "Desentupidor", ctx: "Ferramenta essencial de banheiro.", exs: ["The toilet is clogged, get the plunger.", "Do you have a plunger?"] },
+
+            // LUGARES
+            { id: 401, cat: "Lugares", en: "Downtown", pt: "Centro da cidade", ctx: "Área comercial principal.", exs: ["I work downtown.", "Traffic downtown is terrible."] },
+            { id: 402, cat: "Lugares", en: "Gated community", pt: "Condomínio fechado", ctx: "Bairro residencial com portaria.", exs: ["They live in a gated community.", "Is it a gated community?"] },
+            { id: 403, cat: "Lugares", en: "Two blocks away", pt: "A dois quarteirões", ctx: "Medida padrão de distância urbana.", exs: ["It's just two blocks away.", "The store is three blocks away."] },
+            { id: 404, cat: "Lugares", en: "The suburbs", pt: "O subúrbio (Residencial)", ctx: "Nos EUA, subúrbio é área nobre/classe média, não periferia pobre.", exs: ["We moved to the suburbs for the kids.", "Life in the suburbs is quiet."] },
+
+            // TRABALHO
+            { id: 501, cat: "Trabalho", en: "Let's call it a day", pt: "Vamos encerrar por hoje", ctx: "Fim do expediente.", exs: ["We are tired. Call it a day.", "Let's call it a day guys."] },
+            { id: 502, cat: "Trabalho", en: "I'm swamped", pt: "Estou atolado", ctx: "Muito ocupado.", exs: ["I can't talk, I'm swamped.", "He is swamped with emails."] },
+            { id: 503, cat: "Trabalho", en: "Touch base", pt: "Conversar rapidinho/Alinhar", ctx: "Entrar em contato para atualizar algo.", exs: ["Let's touch base next week.", "I just wanted to touch base with you."] },
+            { id: 504, cat: "Trabalho", en: "Burnout", pt: "Esgotamento profissional", ctx: "Exaustão extrema pelo trabalho.", exs: ["She is suffering from burnout.", "Avoid burnout by taking breaks."] },
+
+            // ESTUDOS
+            { id: 601, cat: "Estudos", en: "My mind went blank", pt: "Deu um branco", ctx: "Esquecer tudo na hora.", exs: ["I saw the test and my mind went blank.", "Sorry, mind went blank."] },
+            { id: 602, cat: "Estudos", en: "Pull an all-nighter", pt: "Passar a noite em claro", ctx: "Ficar acordado estudando.", exs: ["I have to pull an all-nighter.", "Don't pull an all-nighter before the test."] },
+            { id: 603, cat: "Estudos", en: "Hit the books", pt: "Enfiar a cara nos livros", ctx: "Começar a estudar sério.", exs: ["Finals are coming, time to hit the books.", "I can't go out, I gotta hit the books."] },
+            { id: 604, cat: "Estudos", en: "Dropout", pt: "Desistente / Abandonou", ctx: "Alguém que largou a escola/faculdade.", exs: ["He is a college dropout.", "Don't be a dropout."] },
+            { id: 605, cat: "Estudos", en: "Ace the test", pt: "Gabaritar / Ir muito bem", ctx: "Tirar nota máxima.", exs: ["I think I aced the test.", "She aced the interview."] },
+
+            // ELEIÇÕES
+            { id: 701, cat: "Eleições", en: "It's a close race", pt: "A disputa está acirrada", ctx: "Candidatos quase empatados.", exs: ["Polls say it's a close race.", "It was a close race till the end."] },
+            { id: 702, cat: "Eleições", en: "Landslide victory", pt: "Vitória esmagadora", ctx: "Ganhar com muita vantagem.", exs: ["He won by a landslide.", "They are predicting a landslide victory."] },
+            { id: 703, cat: "Eleições", en: "Running for office", pt: "Candidatando-se a um cargo", ctx: "Participar da eleição.", exs: ["Is she running for office?", "I'm running for mayor."] },
+            { id: 704, cat: "Eleições", en: "Voter turnout", pt: "Comparecimento às urnas", ctx: "Quantidade de pessoas que foram votar.", exs: ["Voter turnout was low this year.", "We need higher voter turnout."] },
+
+            // ECONOMIA
+            { id: 801, cat: "Economia", en: "Inflation is skyrocketing", pt: "A inflação está disparando", ctx: "Subindo muito rápido.", exs: ["Gas prices are skyrocketing.", "Rents have skyrocketed here."] },
+            { id: 802, cat: "Economia", en: "Money is tight", pt: "O orçamento está apertado", ctx: "Pouco dinheiro disponível.", exs: ["We can't travel, money is tight.", "Money is tight this month."] },
+            { id: 803, cat: "Economia", en: "Make ends meet", pt: "Fechar as contas (sobreviver)", ctx: "Conseguir pagar tudo com o salário.", exs: ["It's hard to make ends meet these days.", "She works two jobs to make ends meet."] },
+            { id: 804, cat: "Economia", en: "Side hustle", pt: "Bico / Renda extra", ctx: "Trabalho extra além do principal.", exs: ["Uber is his side hustle.", "Do you have a side hustle?"] },
+            { id: 805, cat: "Economia", en: "Rip-off", pt: "Roubo (muito caro)", ctx: "Gíria para algo que não vale o preço.", exs: ["That phone is a rip-off.", "50 dollars? What a rip-off!"] }
         ];
 
         // --- ESTADO DO APP ---
-        // userCards agora guarda: { ...dados, savedExs: [], nextReview: Timestamp, interval: dias, isHard: bool }
-        let userCards = JSON.parse(localStorage.getItem('englishSRS_v1')) || [];
-        let currentCat = 'all';
+        let userCards = JSON.parse(localStorage.getItem('englishApp_v5')) || [];
+        let currentCat = localStorage.getItem('englishApp_lastCat') || 'all'; // Restaura Categoria
+        let searchTerm = "";
         let reviewQueue = [];
         let currentReviewIndex = 0;
-        let activeCardId = null; // Para o modal
+        let activeCardId = null;
         let tempExample = "";
 
         // --- INICIALIZAÇÃO ---
         window.onload = () => {
             updateReviewBadge();
+            
+            // Restaura visual da categoria ativa
+            document.querySelectorAll('.cat-chip').forEach(btn => {
+                btn.classList.remove('active');
+                const btnTxt = btn.innerText;
+                if((currentCat === 'all' && btnTxt === 'Todos') || btnTxt === currentCat) {
+                    btn.classList.add('active');
+                }
+            });
+
             renderFeed();
+
+            // Restaura Posição do Scroll (PERSISTÊNCIA)
+            const savedScroll = localStorage.getItem('englishApp_scrollPos');
+            if(savedScroll) {
+                setTimeout(() => {
+                    document.getElementById('viewExplore').scrollTop = savedScroll;
+                }, 100); // Pequeno delay para garantir renderização
+            }
         };
 
-        // --- LÓGICA DE EXPLORAÇÃO (FEED) ---
+        // Salvar posição de scroll ao rolar
+        document.getElementById('viewExplore').onscroll = function() {
+            localStorage.setItem('englishApp_scrollPos', this.scrollTop);
+        };
+
+        // --- BUSCA E FILTRO ---
         function filterCat(cat, btn) {
             currentCat = cat;
+            localStorage.setItem('englishApp_lastCat', cat); // Salva categoria
             document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
             renderFeed();
         }
 
+        function handleSearch(text) {
+            searchTerm = text.toLowerCase();
+            renderFeed();
+        }
+
         function generateCard() {
-            // Filtrar DB
-            let pool = db;
-            if(currentCat !== 'all') pool = db.filter(i => i.cat === currentCat);
+            const existingIds = userCards.map(c => c.id);
+            let availablePool = db.filter(item => {
+                const isCatMatch = currentCat === 'all' || item.cat === currentCat;
+                const isNew = !existingIds.includes(item.id);
+                return isCatMatch && isNew;
+            });
             
-            if(pool.length === 0) {
-                alert("Nenhuma frase disponível no banco para esta categoria.");
+            if(availablePool.length === 0) {
+                alert("Você já baixou todas as frases disponíveis nesta categoria! Tente outra.");
                 return;
             }
 
-            const item = pool[Math.floor(Math.random() * pool.length)];
+            const item = availablePool[Math.floor(Math.random() * availablePool.length)];
 
-            // Criar novo Card de Usuário
             const newCard = {
                 uid: Date.now().toString(),
                 id: item.id,
@@ -302,40 +434,57 @@
                 pt: item.pt,
                 ctx: item.ctx,
                 savedExs: [],
-                // SRS DATA
-                nextReview: Date.now(), // Revisar hoje
-                interval: 1, // Começa com 1 dia
+                nextReview: Date.now(),
+                interval: 1,
                 isHard: false
             };
 
-            userCards.unshift(newCard); // Adiciona no topo
+            userCards.unshift(newCard);
             saveData();
             renderFeed();
             updateReviewBadge();
+            
+            document.getElementById('viewExplore').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function renderFeed() {
             const feed = document.getElementById('feedList');
             feed.innerHTML = '';
 
-            const filtered = currentCat === 'all' ? userCards : userCards.filter(c => c.cat === currentCat);
+            // Lógica combinada de Filtro: Categoria + Busca
+            const filtered = userCards.filter(c => {
+                const matchCat = currentCat === 'all' || c.cat === currentCat;
+                const matchSearch = c.en.toLowerCase().includes(searchTerm) || 
+                                    c.pt.toLowerCase().includes(searchTerm) || 
+                                    c.ctx.toLowerCase().includes(searchTerm);
+                return matchCat && matchSearch;
+            });
 
             if(filtered.length === 0) {
-                feed.innerHTML = '<div style="text-align:center; color:#999; margin-top:30px;">Nada salvo aqui ainda.<br>Clique no botão preto acima!</div>';
+                feed.innerHTML = '<div style="text-align:center; color:#999; margin-top:30px;">Nenhum card encontrado.</div>';
                 return;
             }
 
-            filtered.forEach(card => {
-                // Post-its HTML
+            // Loop para renderizar
+            filtered.forEach((card, index) => {
+                // Numeração Absoluta: Baseada no total de cards do usuário (Card mais antigo é #1)
+                // userCards está ordem decrescente (novo -> velho). 
+                // Então o indice "real" reverso é userCards.length - indexReal. 
+                // Mas aqui estamos iterando o filtered. Para mostrar o número real, precisamos achar o indice no array principal.
+                const realIndex = userCards.findIndex(uc => uc.uid === card.uid);
+                const cardNumber = userCards.length - realIndex;
+
                 const exsHTML = card.savedExs.map(ex => `
                     <div class="post-it">
                         <span>📝 ${ex}</span>
-                        <button onclick="speak('${ex.replace(/'/g, "\\'")}')" style="border:none; bg:none;">🔊</button>
+                        <button onclick="speak('${ex.replace(/'/g, "\\'")}')" style="border:none; background:none;">🔊</button>
                     </div>
                 `).join('');
 
                 const html = `
                     <div class="card ${card.isHard ? 'hard-mode' : ''}">
+                        <div class="card-number">#${cardNumber}</div>
+                        
                         <div class="card-header-row">
                             <span class="card-cat">${card.cat}</span>
                             <button class="toggle-hard-btn" onclick="toggleHard('${card.uid}')">
@@ -369,20 +518,37 @@
             const card = userCards.find(c => c.uid === uid);
             if(card) {
                 card.isHard = !card.isHard;
-                // Se marcou difícil, reseta intervalo pra 1 dia
-                if(card.isHard) {
-                    card.interval = 1;
-                    card.nextReview = Date.now(); 
-                }
+                if(card.isHard) { card.interval = 1; card.nextReview = Date.now(); }
                 saveData();
                 renderFeed();
                 updateReviewBadge();
             }
         }
 
-        // --- LÓGICA DE REVISÃO (SRS) ---
+        // --- SRS / REVISÃO ---
+        function switchView(view) {
+            const vExp = document.getElementById('viewExplore');
+            const vRev = document.getElementById('viewReview');
+            const hExp = document.getElementById('headerExplore');
+            
+            if(view === 'explore') {
+                vExp.classList.remove('hidden');
+                hExp.classList.remove('hidden');
+                vRev.classList.add('hidden');
+                document.getElementById('navExp').classList.add('active');
+                document.getElementById('navRev').classList.remove('active');
+                renderFeed(); 
+            } else {
+                vExp.classList.add('hidden');
+                hExp.classList.add('hidden');
+                vRev.classList.remove('hidden');
+                document.getElementById('navExp').classList.remove('active');
+                document.getElementById('navRev').classList.add('active');
+                startReview();
+            }
+        }
+
         function startReview() {
-            // Pegar cards vencidos
             const now = Date.now();
             reviewQueue = userCards.filter(c => c.nextReview <= now);
             currentReviewIndex = 0;
@@ -397,8 +563,8 @@
                     <div style="text-align:center;">
                         <div style="font-size:50px;">🎉</div>
                         <h2>Tudo em dia!</h2>
-                        <p>Você revisou todos os cards pendentes.</p>
-                        <button onclick="switchView('explore')" class="act-btn" style="margin:20px auto;">Voltar</button>
+                        <p>Você não tem revisões pendentes agora.</p>
+                        <button onclick="switchView('explore')" class="act-btn" style="margin:20px auto; background:black; color:white;">Voltar para Explorar</button>
                     </div>
                 `;
                 return;
@@ -409,7 +575,7 @@
                     <div style="text-align:center;">
                         <h2>Sessão Concluída!</h2>
                         <p>Volte amanhã para mais.</p>
-                        <button onclick="switchView('explore')" class="act-btn" style="margin:20px auto;">Voltar</button>
+                        <button onclick="switchView('explore')" class="act-btn" style="margin:20px auto; background:black; color:white;">Voltar</button>
                     </div>
                 `;
                 return;
@@ -443,41 +609,24 @@
 
         function processSRS(difficulty) {
             const card = reviewQueue[currentReviewIndex];
-            const realCard = userCards.find(c => c.uid === card.uid); // Pega referência original
+            const realCard = userCards.find(c => c.uid === card.uid);
 
             if (difficulty === 'hard') {
-                // Difícil: Reseta para 1 dia (ou mantém curto)
                 realCard.interval = 1;
                 realCard.isHard = true; 
             } else {
-                // Fácil: Multiplica intervalo (x2)
                 realCard.interval = Math.ceil(realCard.interval * 2);
-                realCard.isHard = false; // Tira flag de difícil se acertou
+                realCard.isHard = false;
             }
 
-            // Define próxima data: Agora + Dias
             realCard.nextReview = Date.now() + (realCard.interval * 24 * 60 * 60 * 1000);
-            
             saveData();
             currentReviewIndex++;
             renderReviewCard();
             updateReviewBadge();
         }
 
-        function updateReviewBadge() {
-            const now = Date.now();
-            const count = userCards.filter(c => c.nextReview <= now).length;
-            const badge = document.getElementById('revBadge');
-            if(count > 0) {
-                badge.innerText = count;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
-
-
-        // --- UTILITÁRIOS E MODAIS ---
+        // --- MODAL / AUXILIARES ---
         function openModal(uid) {
             activeCardId = uid;
             document.getElementById('modalEx').classList.add('show');
@@ -510,6 +659,48 @@
             activeCardId = null;
         }
 
+        // --- BACKUP ---
+        function backupData() {
+            const dataStr = JSON.stringify(userCards);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', 'meus_cards_ingles.json');
+            linkElement.click();
+        }
+
+        function restoreData(input) {
+            const file = input.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(Array.isArray(data)) {
+                        if(confirm("Substituir dados atuais pelo backup?")) {
+                            userCards = data;
+                            saveData();
+                            location.reload();
+                        }
+                    } else { alert("Arquivo inválido."); }
+                } catch(err) { alert("Erro ao ler o arquivo."); }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- UTIL ---
+        function updateReviewBadge() {
+            const now = Date.now();
+            const count = userCards.filter(c => c.nextReview <= now).length;
+            const badge = document.getElementById('revBadge');
+            if(count > 0) {
+                badge.innerText = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
         function deleteCard(uid) {
             if(confirm("Apagar este card?")) {
                 userCards = userCards.filter(c => c.uid !== uid);
@@ -526,25 +717,7 @@
         }
 
         function saveData() {
-            localStorage.setItem('englishSRS_v1', JSON.stringify(userCards));
-        }
-
-        function switchView(view) {
-            if(view === 'explore') {
-                document.getElementById('viewExplore').classList.remove('hidden');
-                document.getElementById('headerExplore').classList.remove('hidden');
-                document.getElementById('viewReview').classList.add('hidden');
-                document.getElementById('navExp').classList.add('active');
-                document.getElementById('navRev').classList.remove('active');
-                renderFeed(); // Atualiza caso tenha mudado algo na revisão
-            } else {
-                document.getElementById('viewExplore').classList.add('hidden');
-                document.getElementById('headerExplore').classList.add('hidden');
-                document.getElementById('viewReview').classList.remove('hidden');
-                document.getElementById('navExp').classList.remove('active');
-                document.getElementById('navRev').classList.add('active');
-                startReview();
-            }
+            localStorage.setItem('englishApp_v5', JSON.stringify(userCards));
         }
 
     </script>
