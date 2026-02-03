@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Daily English Pro</title>
+    <title>Daily English Unlimited</title>
     <style>
         :root {
             --primary: #007AFF;
@@ -54,7 +54,7 @@
             border: 1px solid #ddd;
             background: #E5E5EA;
             font-size: 14px;
-            box-sizing: border-box; /* Garante que padding não estoure a largura */
+            box-sizing: border-box;
             outline: none;
         }
         .search-input:focus { background: #fff; border-color: var(--primary); }
@@ -121,7 +121,7 @@
         .card-header-row {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 10px;
-            padding-right: 30px; /* Espaço para o número */
+            padding-right: 30px;
         }
         .card-cat { font-size: 10px; font-weight: 800; color: #999; text-transform: uppercase; letter-spacing: 1px; }
         
@@ -241,10 +241,11 @@
         <div class="cat-scroll">
             <button class="cat-chip active" onclick="filterCat('all', this)">Todos</button>
             <button class="cat-chip" onclick="filterCat('Relacionamento', this)">Relacionamento</button>
+            <button class="cat-chip" onclick="filterCat('Trabalho', this)">Trabalho</button>
+            <button class="cat-chip" onclick="filterCat('Gírias', this)">Gírias</button>
             <button class="cat-chip" onclick="filterCat('Família', this)">Família</button>
             <button class="cat-chip" onclick="filterCat('Objetos', this)">Objetos</button>
             <button class="cat-chip" onclick="filterCat('Lugares', this)">Lugares</button>
-            <button class="cat-chip" onclick="filterCat('Trabalho', this)">Trabalho</button>
             <button class="cat-chip" onclick="filterCat('Estudos', this)">Estudos</button>
             <button class="cat-chip" onclick="filterCat('Eleições', this)">Eleições</button>
             <button class="cat-chip" onclick="filterCat('Economia', this)">Economia</button>
@@ -271,8 +272,7 @@
     </div>
 
     <div id="viewReview" class="view-container hidden" style="background:#f0f0f5;">
-        <div class="review-mode-container" id="reviewContainer">
-            </div>
+        <div class="review-mode-container" id="reviewContainer"></div>
     </div>
 
     <div id="modalEx" class="modal-overlay">
@@ -294,7 +294,6 @@
             <span style="font-size:24px;">🗂️</span>
             <span>Explorar</span>
         </button>
-        
         <button class="nav-item" id="navRev" onclick="switchView('review')">
             <span style="font-size:24px;">🧠</span>
             <span>Revisar <span id="revBadge" class="badge hidden">0</span></span>
@@ -302,66 +301,110 @@
     </div>
 
     <script>
-        // --- BANCO DE DADOS (Expandido) ---
+        // --- BANCO DE DADOS GIGANTE (Expanded) ---
         const db = [
-            // RELACIONAMENTO
-            { id: 101, cat: "Relacionamento", en: "We need to talk", pt: "Precisamos conversar (DR)", ctx: "Geralmente indica notícias ruins ou término.", exs: ["Can you come over? We need to talk.", "She sent a text: 'we need to talk'."] },
-            { id: 102, cat: "Relacionamento", en: "He stood me up", pt: "Ele me deu um bolo", ctx: "Quando alguém não aparece no encontro marcado.", exs: ["I waited for an hour but he stood me up.", "Don't stand me up again."] },
-            { id: 103, cat: "Relacionamento", en: "I have a crush on her", pt: "Tenho uma queda por ela", ctx: "Estar interessado romanticamente em alguém.", exs: ["Everybody knows he has a crush on the teacher.", "It's just a silly crush."] },
-            { id: 104, cat: "Relacionamento", en: "We hit it off", pt: "Nos demos bem de cara", ctx: "Quando a conexão é imediata no primeiro encontro.", exs: ["We met at the party and really hit it off.", "I didn't think we would hit it off."] },
-            { id: 105, cat: "Relacionamento", en: "Third wheel", pt: "Segurar vela", ctx: "Ser a pessoa sobrando num casal.", exs: ["I don't want to go to the movies and be a third wheel.", "Being a third wheel is awkward."] },
-            { id: 106, cat: "Relacionamento", en: "Ghosting", pt: "Sumir (dar um vácuo eterno)", ctx: "Parar de responder mensagens repentinamente.", exs: ["I thought he liked me, but he is ghosting me.", "Ghosting is so immature."] },
+            // RELACIONAMENTO (20 itens)
+            { id: 1001, cat: "Relacionamento", en: "We need to talk", pt: "Precisamos conversar (DR)", ctx: "Geralmente indica notícias ruins ou término.", exs: ["Can you come over? We need to talk.", "She sent a text: 'we need to talk'."] },
+            { id: 1002, cat: "Relacionamento", en: "He stood me up", pt: "Ele me deu um bolo", ctx: "Quando alguém não aparece no encontro marcado.", exs: ["I waited for an hour but he stood me up.", "Don't stand me up again."] },
+            { id: 1003, cat: "Relacionamento", en: "I have a crush on her", pt: "Tenho uma queda por ela", ctx: "Estar interessado romanticamente em alguém.", exs: ["Everybody knows he has a crush on the teacher.", "It's just a silly crush."] },
+            { id: 1004, cat: "Relacionamento", en: "We hit it off", pt: "Nos demos bem de cara", ctx: "Quando a conexão é imediata no primeiro encontro.", exs: ["We met at the party and really hit it off.", "I didn't think we would hit it off."] },
+            { id: 1005, cat: "Relacionamento", en: "Third wheel", pt: "Segurar vela", ctx: "Ser a pessoa sobrando num casal.", exs: ["I don't want to go to the movies and be a third wheel.", "Being a third wheel is awkward."] },
+            { id: 1006, cat: "Relacionamento", en: "Ghosting", pt: "Sumir (Vácuo eterno)", ctx: "Parar de responder mensagens repentinamente.", exs: ["I thought he liked me, but he is ghosting me.", "Ghosting is so immature."] },
+            { id: 1007, cat: "Relacionamento", en: "Pop the question", pt: "Pedir em casamento", ctx: "A expressão clássica para propor noivado.", exs: ["He is going to pop the question tonight.", "Did he pop the question yet?"] },
+            { id: 1008, cat: "Relacionamento", en: "Tie the knot", pt: "Casar-se (Juntar os trapos)", ctx: "Gíria para realizar o casamento.", exs: ["They are tying the knot next summer.", "We finally tied the knot."] },
+            { id: 1009, cat: "Relacionamento", en: "Split the bill", pt: "Rachar a conta", ctx: "Dividir despesas meio a meio.", exs: ["Let's split the bill.", "I prefer to split the bill on the first date."] },
+            { id: 1010, cat: "Relacionamento", en: "On the rocks", pt: "Em crise (relacionamento)", ctx: "Quando o casamento/namoro está prestes a acabar.", exs: ["Their marriage is on the rocks.", "My relationship is on the rocks."] },
+            { id: 1011, cat: "Relacionamento", en: "Blind date", pt: "Encontro às escuras", ctx: "Sair com alguém que você nunca viu.", exs: ["I'm going on a blind date.", "My sister set me up on a blind date."] },
+            { id: 1012, cat: "Relacionamento", en: "Lead someone on", pt: "Iludir alguém", ctx: "Dar esperanças falsas de romance.", exs: ["Don't lead him on if you don't like him.", "She is just leading you on."] },
+            { id: 1013, cat: "Relacionamento", en: "Cheated on", pt: "Traiu (chifrou)", ctx: "Ser infiel no relacionamento.", exs: ["He cheated on her with his secretary.", "I would never cheat on you."] },
+            { id: 1014, cat: "Relacionamento", en: "Make up", pt: "Fazer as pazes", ctx: "Reconciliar após briga.", exs: ["We fought, but we made up.", "Kiss and make up."] },
+            { id: 1015, cat: "Relacionamento", en: "Dumped", pt: "Levou um fora", ctx: "Terminar com alguém (informal).", exs: ["She dumped him yesterday.", "I got dumped via text message."] },
+
+            // TRABALHO (20 itens)
+            { id: 2001, cat: "Trabalho", en: "Let's call it a day", pt: "Vamos encerrar por hoje", ctx: "Fim do expediente.", exs: ["We are tired. Call it a day.", "Let's call it a day guys."] },
+            { id: 2002, cat: "Trabalho", en: "I'm swamped", pt: "Estou atolado", ctx: "Muito ocupado.", exs: ["I can't talk, I'm swamped.", "He is swamped with emails."] },
+            { id: 2003, cat: "Trabalho", en: "Touch base", pt: "Alinhar / Conversar rápido", ctx: "Entrar em contato para atualizar algo.", exs: ["Let's touch base next week.", "I just wanted to touch base with you."] },
+            { id: 2004, cat: "Trabalho", en: "Burnout", pt: "Esgotamento", ctx: "Exaustão extrema pelo trabalho.", exs: ["She is suffering from burnout.", "Avoid burnout by taking breaks."] },
+            { id: 2005, cat: "Trabalho", en: "Think outside the box", pt: "Pensar fora da caixa", ctx: "Ter ideias criativas/inovadoras.", exs: ["We need to think outside the box to solve this.", "He always thinks outside the box."] },
+            { id: 2006, cat: "Trabalho", en: "Get the ball rolling", pt: "Dar o pontapé inicial", ctx: "Começar um projeto ou processo.", exs: ["Let's get the ball rolling on this project.", "Who will get the ball rolling?"] },
+            { id: 2007, cat: "Trabalho", en: "In the loop", pt: "A par do assunto", ctx: "Manter alguém informado.", exs: ["Keep me in the loop.", "Please copy her to keep her in the loop."] },
+            { id: 2008, cat: "Trabalho", en: "Slack off", pt: "Fazer corpo mole", ctx: "Preguiça no trabalho.", exs: ["Don't slack off today.", "He got fired for slacking off."] },
+            { id: 2009, cat: "Trabalho", en: "Pink slip", pt: "Aviso de demissão", ctx: "Expressão para ser demitido.", exs: ["He got the pink slip today.", "Layoffs are coming, many pink slips."] },
+            { id: 2010, cat: "Trabalho", en: "Cut corners", pt: "Fazer nas coxas / Economizar", ctx: "Fazer algo mal feito para economizar tempo/dinheiro.", exs: ["Don't cut corners on safety.", "They cut corners to finish early."] },
+            { id: 2011, cat: "Trabalho", en: "Call the shots", pt: "Dar as cartas (Mandar)", ctx: "Ser quem toma as decisões.", exs: ["Who calls the shots here?", "My boss calls the shots."] },
+            { id: 2012, cat: "Trabalho", en: "Back to the drawing board", pt: "Voltar à estaca zero", ctx: "Recomeçar porque deu errado.", exs: ["The plan failed, back to the drawing board.", "We are back to the drawing board."] },
+            { id: 2013, cat: "Trabalho", en: "Deadline", pt: "Prazo final", ctx: "Data limite de entrega.", exs: ["The deadline is tomorrow.", "I missed the deadline."] },
+            { id: 2014, cat: "Trabalho", en: "Overtime", pt: "Hora extra", ctx: "Trabalhar além do horário.", exs: ["I'm getting paid overtime.", "Too much overtime is tiring."] },
+            { id: 2015, cat: "Trabalho", en: "Day off", pt: "Dia de folga", ctx: "Dia que não trabalha.", exs: ["I need a day off.", "My day off is Monday."] },
+
+            // GÍRIAS (20 itens)
+            { id: 3001, cat: "Gírias", en: "No way!", pt: "Mentira! / Nem ferrando!", ctx: "Surpresa ou negação.", exs: ["You won? No way!", "No way I'm eating that."] },
+            { id: 3002, cat: "Gírias", en: "My bad", pt: "Foi mal", ctx: "Pedir desculpa informal.", exs: ["Oops, my bad.", "My bad, I forgot."] },
+            { id: 3003, cat: "Gírias", en: "Spill the tea", pt: "Conta a fofoca", ctx: "Contar os detalhes do drama.", exs: ["Come on, spill the tea!", "I have some tea to spill."] },
+            { id: 3004, cat: "Gírias", en: "Throw shade", pt: "Jogar indireta/Venenosa", ctx: "Falar mal de alguém sutilmente.", exs: ["She threw shade at him on Twitter.", "Stop throwing shade."] },
+            { id: 3005, cat: "Gírias", en: "Salty", pt: "Amargo / Recalcado", ctx: "Estar chateado ou com inveja.", exs: ["He is salty because he lost.", "Don't be salty."] },
+            { id: 3006, cat: "Gírias", en: "Ghost", pt: "Sumir", ctx: "Sair sem avisar.", exs: ["Did he ghost you?", "I'm going to ghost this party."] },
+            { id: 3007, cat: "Gírias", en: "Lit", pt: "Top / Incrível / Animado", ctx: "Algo muito legal ou festa boa.", exs: ["This party is lit!", "Last night was lit."] },
+            { id: 3008, cat: "Gírias", en: "Lowkey", pt: "No sigilo / Discretamente", ctx: "Algo secreto ou leve.", exs: ["I lowkey like that song.", "Keep it lowkey."] },
+            { id: 3009, cat: "Gírias", en: "Flex", pt: "Ostentar / Se mostrar", ctx: "Exibir dinheiro ou músculos.", exs: ["He loves to flex his watch.", "Weird flex but ok."] },
+            { id: 3010, cat: "Gírias", en: "Cringe", pt: "Vergonha alheia", ctx: "Algo constrangedor.", exs: ["That video is so cringe.", "Stop being cringe."] },
+            { id: 3011, cat: "Gírias", en: "Bail", pt: "Dar o cano / Ir embora", ctx: "Cancelar planos ou sair rápido.", exs: ["Sorry, I have to bail.", "Don't bail on me."] },
+            { id: 3012, cat: "Gírias", en: "Zone out", pt: "Viajar na maionese", ctx: "Perder a atenção.", exs: ["I zoned out during the meeting.", "Sorry, I zoned out."] },
+            { id: 3013, cat: "Gírias", en: "Hang out", pt: "Passar tempo / Dar um rolê", ctx: "Ficar com amigos sem fazer nada específico.", exs: ["Let's hang out later.", "Do you want to hang out?"] },
+            { id: 3014, cat: "Gírias", en: "Rip-off", pt: "Roubo (caro)", ctx: "Preço abusivo.", exs: ["That price is a rip-off.", "What a rip-off!"] },
+            { id: 3015, cat: "Gírias", en: "Bummer", pt: "Que chato / Decepção", ctx: "Algo triste ou inconveniente.", exs: ["It rained? What a bummer.", "That's a bummer."] },
 
             // FAMÍLIA
-            { id: 201, cat: "Família", en: "Like father, like son", pt: "Tal pai, tal filho", ctx: "Similaridade de comportamento ou aparência.", exs: ["He is stubborn. Like father, like son.", "They both assume the same pose. Like father, like son."] },
-            { id: 202, cat: "Família", en: "I was raised in...", pt: "Eu fui criado em...", ctx: "Falar sobre onde cresceu/foi educado.", exs: ["I was raised in Texas.", "She was raised by her aunt."] },
-            { id: 203, cat: "Família", en: "Black sheep", pt: "Ovelha negra", ctx: "O membro diferente ou problemático da família.", exs: ["He is the black sheep of the family.", "Every family has a black sheep."] },
-            { id: 204, cat: "Família", en: "Runs in the family", pt: "É de família (genético)", ctx: "Característica comum a todos os parentes.", exs: ["Diabetes runs in the family.", "Red hair runs in the family."] },
-            { id: 205, cat: "Família", en: "Look after", pt: "Cuidar de (alguém)", ctx: "Tomar conta de crianças ou idosos.", exs: ["Can you look after my son tonight?", "I have to look after my grandma."] },
+            { id: 4001, cat: "Família", en: "Like father, like son", pt: "Tal pai, tal filho", ctx: "Semelhança.", exs: ["He sleeps like his dad. Like father, like son."] },
+            { id: 4002, cat: "Família", en: "Black sheep", pt: "Ovelha negra", ctx: "O diferente da família.", exs: ["I am the black sheep.", "Every family has a black sheep."] },
+            { id: 4003, cat: "Família", en: "Look after", pt: "Cuidar de", ctx: "Tomar conta.", exs: ["Can you look after the baby?", "I look after my mom."] },
+            { id: 4004, cat: "Família", en: "Upbringing", pt: "Criação/Educação", ctx: "Como foi criado.", exs: ["He had a strict upbringing.", "Good upbringing matters."] },
+            { id: 4005, cat: "Família", en: "Runs in the family", pt: "É de família", ctx: "Genético.", exs: ["It runs in the family.", "Blue eyes run in the family."] },
+            { id: 4006, cat: "Família", en: "Siblings", pt: "Irmãos (gênero neutro)", ctx: "Irmãos e irmãs.", exs: ["Do you have siblings?", "I have three siblings."] },
+            { id: 4007, cat: "Família", en: "Breadwinner", pt: "Sustento da casa", ctx: "Quem ganha o dinheiro da família.", exs: ["She is the breadwinner.", "Being the breadwinner is stressful."] },
+            { id: 4008, cat: "Família", en: "Take after", pt: "Puxar a (alguém)", ctx: "Parecer com parente.", exs: ["I take after my mother.", "He takes after his grandpa."] },
 
-            // OBJETOS
-            { id: 301, cat: "Objetos", en: "Power strip", pt: "Régua / Extensão", ctx: "Dispositivo com várias tomadas.", exs: ["Plug the computer into the power strip.", "The power strip is overloaded."] },
-            { id: 302, cat: "Objetos", en: "Coaster", pt: "Porta-copos", ctx: "Aquele apoio para não manchar a mesa.", exs: ["Please use a coaster.", "Pass me a coaster for my beer."] },
-            { id: 303, cat: "Objetos", en: "Clothespin", pt: "Pregador de roupa", ctx: "Usado para prender roupa no varal.", exs: ["We need more clothespins.", "Hold this with a clothespin."] },
-            { id: 304, cat: "Objetos", en: "The remote is dead", pt: "O controle acabou a pilha", ctx: "Diz-se que eletrônicos 'morreram' quando acaba a energia.", exs: ["My phone is dead.", "Is the remote dead again?"] },
-            { id: 305, cat: "Objetos", en: "Plunger", pt: "Desentupidor", ctx: "Ferramenta essencial de banheiro.", exs: ["The toilet is clogged, get the plunger.", "Do you have a plunger?"] },
+             // OBJETOS
+            { id: 5001, cat: "Objetos", en: "Power strip", pt: "Régua / Extensão", ctx: "Várias tomadas.", exs: ["Plug it in the power strip."] },
+            { id: 5002, cat: "Objetos", en: "Coaster", pt: "Porta-copos", ctx: "Apoio de bebida.", exs: ["Use a coaster please."] },
+            { id: 5003, cat: "Objetos", en: "Plunger", pt: "Desentupidor", ctx: "Para banheiro.", exs: ["Get the plunger."] },
+            { id: 5004, cat: "Objetos", en: "Remote is dead", pt: "Controle sem pilha", ctx: "Bateria acabou.", exs: ["The remote is dead."] },
+            { id: 5005, cat: "Objetos", en: "Extension cord", pt: "Extensão (fio)", ctx: "Fio longo.", exs: ["I need an extension cord."] },
+            { id: 5006, cat: "Objetos", en: "Q-tip", pt: "Cotonete", ctx: "Marca que virou nome.", exs: ["Do you have a Q-tip?", "Don't put Q-tips in your ear."] },
+            { id: 5007, cat: "Objetos", en: "Band-aid", pt: "Curativo", ctx: "Marca virou nome.", exs: ["I need a band-aid.", "It's just a band-aid solution."] },
+            { id: 5008, cat: "Objetos", en: "Hanger", pt: "Cabide", ctx: "Para pendurar roupa.", exs: ["Put it on a hanger.", "Plastic hanger."] },
+            { id: 5009, cat: "Objetos", en: "Stapler", pt: "Grampeador", ctx: "Escritório.", exs: ["Pass me the stapler.", "The stapler is empty."] },
+            { id: 5010, cat: "Objetos", en: "Duct tape", pt: "Fita adesiva (prata)", ctx: "Fita forte.", exs: ["Fix it with duct tape.", "Duct tape fixes everything."] },
 
             // LUGARES
-            { id: 401, cat: "Lugares", en: "Downtown", pt: "Centro da cidade", ctx: "Área comercial principal.", exs: ["I work downtown.", "Traffic downtown is terrible."] },
-            { id: 402, cat: "Lugares", en: "Gated community", pt: "Condomínio fechado", ctx: "Bairro residencial com portaria.", exs: ["They live in a gated community.", "Is it a gated community?"] },
-            { id: 403, cat: "Lugares", en: "Two blocks away", pt: "A dois quarteirões", ctx: "Medida padrão de distância urbana.", exs: ["It's just two blocks away.", "The store is three blocks away."] },
-            { id: 404, cat: "Lugares", en: "The suburbs", pt: "O subúrbio (Residencial)", ctx: "Nos EUA, subúrbio é área nobre/classe média, não periferia pobre.", exs: ["We moved to the suburbs for the kids.", "Life in the suburbs is quiet."] },
-
-            // TRABALHO
-            { id: 501, cat: "Trabalho", en: "Let's call it a day", pt: "Vamos encerrar por hoje", ctx: "Fim do expediente.", exs: ["We are tired. Call it a day.", "Let's call it a day guys."] },
-            { id: 502, cat: "Trabalho", en: "I'm swamped", pt: "Estou atolado", ctx: "Muito ocupado.", exs: ["I can't talk, I'm swamped.", "He is swamped with emails."] },
-            { id: 503, cat: "Trabalho", en: "Touch base", pt: "Conversar rapidinho/Alinhar", ctx: "Entrar em contato para atualizar algo.", exs: ["Let's touch base next week.", "I just wanted to touch base with you."] },
-            { id: 504, cat: "Trabalho", en: "Burnout", pt: "Esgotamento profissional", ctx: "Exaustão extrema pelo trabalho.", exs: ["She is suffering from burnout.", "Avoid burnout by taking breaks."] },
+            { id: 6001, cat: "Lugares", en: "Downtown", pt: "Centro", ctx: "Área comercial.", exs: ["Let's go downtown."] },
+            { id: 6002, cat: "Lugares", en: "Suburbs", pt: "Subúrbio (Residencial)", ctx: "Bairros residenciais.", exs: ["Living in the suburbs."] },
+            { id: 6003, cat: "Lugares", en: "Gated community", pt: "Condomínio fechado", ctx: "Segurança.", exs: ["Nice gated community."] },
+            { id: 6004, cat: "Lugares", en: "Cul-de-sac", pt: "Rua sem saída (redonda)", ctx: "Rua residencial.", exs: ["We live in a cul-de-sac."] },
+            { id: 6005, cat: "Lugares", en: "High rise", pt: "Arranha-céu", ctx: "Prédio alto.", exs: ["He works in a high rise."] },
 
             // ESTUDOS
-            { id: 601, cat: "Estudos", en: "My mind went blank", pt: "Deu um branco", ctx: "Esquecer tudo na hora.", exs: ["I saw the test and my mind went blank.", "Sorry, mind went blank."] },
-            { id: 602, cat: "Estudos", en: "Pull an all-nighter", pt: "Passar a noite em claro", ctx: "Ficar acordado estudando.", exs: ["I have to pull an all-nighter.", "Don't pull an all-nighter before the test."] },
-            { id: 603, cat: "Estudos", en: "Hit the books", pt: "Enfiar a cara nos livros", ctx: "Começar a estudar sério.", exs: ["Finals are coming, time to hit the books.", "I can't go out, I gotta hit the books."] },
-            { id: 604, cat: "Estudos", en: "Dropout", pt: "Desistente / Abandonou", ctx: "Alguém que largou a escola/faculdade.", exs: ["He is a college dropout.", "Don't be a dropout."] },
-            { id: 605, cat: "Estudos", en: "Ace the test", pt: "Gabaritar / Ir muito bem", ctx: "Tirar nota máxima.", exs: ["I think I aced the test.", "She aced the interview."] },
+            { id: 7001, cat: "Estudos", en: "Pull an all-nighter", pt: "Passar noite em claro", ctx: "Estudar a noite toda.", exs: ["I pulled an all-nighter."] },
+            { id: 7002, cat: "Estudos", en: "Mind went blank", pt: "Deu branco", ctx: "Esquecer.", exs: ["My mind went blank."] },
+            { id: 7003, cat: "Estudos", en: "Hit the books", pt: "Estudar muito", ctx: "Começar a estudar.", exs: ["Time to hit the books."] },
+            { id: 7004, cat: "Estudos", en: "Dropout", pt: "Desistente", ctx: "Largou escola.", exs: ["He is a dropout."] },
+            { id: 7005, cat: "Estudos", en: "Ace the test", pt: "Gabaritar", ctx: "Ir muito bem.", exs: ["I aced the test."] },
+            { id: 7006, cat: "Estudos", en: "Cram", pt: "Estudar de última hora", ctx: "Decorar antes da prova.", exs: ["I have to cram for the test."] },
+            { id: 7007, cat: "Estudos", en: "Flunk", pt: "Bombarde (reprovar)", ctx: "Falhar na matéria.", exs: ["I flunked math.", "Don't flunk."] },
+            { id: 7008, cat: "Estudos", en: "Teacher's pet", pt: "Queridinho do professor", ctx: "Aluno favorito.", exs: ["Nobody likes a teacher's pet."] },
 
-            // ELEIÇÕES
-            { id: 701, cat: "Eleições", en: "It's a close race", pt: "A disputa está acirrada", ctx: "Candidatos quase empatados.", exs: ["Polls say it's a close race.", "It was a close race till the end."] },
-            { id: 702, cat: "Eleições", en: "Landslide victory", pt: "Vitória esmagadora", ctx: "Ganhar com muita vantagem.", exs: ["He won by a landslide.", "They are predicting a landslide victory."] },
-            { id: 703, cat: "Eleições", en: "Running for office", pt: "Candidatando-se a um cargo", ctx: "Participar da eleição.", exs: ["Is she running for office?", "I'm running for mayor."] },
-            { id: 704, cat: "Eleições", en: "Voter turnout", pt: "Comparecimento às urnas", ctx: "Quantidade de pessoas que foram votar.", exs: ["Voter turnout was low this year.", "We need higher voter turnout."] },
-
-            // ECONOMIA
-            { id: 801, cat: "Economia", en: "Inflation is skyrocketing", pt: "A inflação está disparando", ctx: "Subindo muito rápido.", exs: ["Gas prices are skyrocketing.", "Rents have skyrocketed here."] },
-            { id: 802, cat: "Economia", en: "Money is tight", pt: "O orçamento está apertado", ctx: "Pouco dinheiro disponível.", exs: ["We can't travel, money is tight.", "Money is tight this month."] },
-            { id: 803, cat: "Economia", en: "Make ends meet", pt: "Fechar as contas (sobreviver)", ctx: "Conseguir pagar tudo com o salário.", exs: ["It's hard to make ends meet these days.", "She works two jobs to make ends meet."] },
-            { id: 804, cat: "Economia", en: "Side hustle", pt: "Bico / Renda extra", ctx: "Trabalho extra além do principal.", exs: ["Uber is his side hustle.", "Do you have a side hustle?"] },
-            { id: 805, cat: "Economia", en: "Rip-off", pt: "Roubo (muito caro)", ctx: "Gíria para algo que não vale o preço.", exs: ["That phone is a rip-off.", "50 dollars? What a rip-off!"] }
+            // ECONOMIA & ELEIÇÕES
+            { id: 8001, cat: "Economia", en: "Inflation skyrocketed", pt: "Inflação disparou", ctx: "Preços subindo.", exs: ["Prices skyrocketed."] },
+            { id: 8002, cat: "Economia", en: "Make ends meet", pt: "Fechar as contas", ctx: "Sobreviver com o salário.", exs: ["Hard to make ends meet."] },
+            { id: 8003, cat: "Economia", en: "Side hustle", pt: "Renda extra", ctx: "Trabalho extra.", exs: ["I need a side hustle."] },
+            { id: 8004, cat: "Eleições", en: "Close race", pt: "Disputa acirrada", ctx: "Empate técnico.", exs: ["It's a close race."] },
+            { id: 8005, cat: "Eleições", en: "Landslide", pt: "Vitória esmagadora", ctx: "Ganhar por muito.", exs: ["Won by a landslide."] },
+            { id: 8006, cat: "Eleições", en: "Turnout", pt: "Comparecimento", ctx: "Pessoas que votaram.", exs: ["Low voter turnout."] }
         ];
 
         // --- ESTADO DO APP ---
         let userCards = JSON.parse(localStorage.getItem('englishApp_v5')) || [];
-        let currentCat = localStorage.getItem('englishApp_lastCat') || 'all'; // Restaura Categoria
+        let currentCat = localStorage.getItem('englishApp_lastCat') || 'all'; 
         let searchTerm = "";
         let reviewQueue = [];
         let currentReviewIndex = 0;
@@ -372,7 +415,6 @@
         window.onload = () => {
             updateReviewBadge();
             
-            // Restaura visual da categoria ativa
             document.querySelectorAll('.cat-chip').forEach(btn => {
                 btn.classList.remove('active');
                 const btnTxt = btn.innerText;
@@ -383,16 +425,15 @@
 
             renderFeed();
 
-            // Restaura Posição do Scroll (PERSISTÊNCIA)
+            // Persistência de Scroll
             const savedScroll = localStorage.getItem('englishApp_scrollPos');
             if(savedScroll) {
                 setTimeout(() => {
                     document.getElementById('viewExplore').scrollTop = savedScroll;
-                }, 100); // Pequeno delay para garantir renderização
+                }, 100);
             }
         };
 
-        // Salvar posição de scroll ao rolar
         document.getElementById('viewExplore').onscroll = function() {
             localStorage.setItem('englishApp_scrollPos', this.scrollTop);
         };
@@ -400,7 +441,7 @@
         // --- BUSCA E FILTRO ---
         function filterCat(cat, btn) {
             currentCat = cat;
-            localStorage.setItem('englishApp_lastCat', cat); // Salva categoria
+            localStorage.setItem('englishApp_lastCat', cat);
             document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
             renderFeed();
@@ -411,6 +452,7 @@
             renderFeed();
         }
 
+        // --- GERADOR (CORE) ---
         function generateCard() {
             const existingIds = userCards.map(c => c.id);
             let availablePool = db.filter(item => {
@@ -420,7 +462,7 @@
             });
             
             if(availablePool.length === 0) {
-                alert("Você já baixou todas as frases disponíveis nesta categoria! Tente outra.");
+                alert("Você já baixou todas as frases disponíveis nesta categoria! Tente outra ou use a busca para revisar.");
                 return;
             }
 
@@ -444,6 +486,7 @@
             renderFeed();
             updateReviewBadge();
             
+            // Scroll para topo
             document.getElementById('viewExplore').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -451,7 +494,6 @@
             const feed = document.getElementById('feedList');
             feed.innerHTML = '';
 
-            // Lógica combinada de Filtro: Categoria + Busca
             const filtered = userCards.filter(c => {
                 const matchCat = currentCat === 'all' || c.cat === currentCat;
                 const matchSearch = c.en.toLowerCase().includes(searchTerm) || 
@@ -465,12 +507,11 @@
                 return;
             }
 
-            // Loop para renderizar
             filtered.forEach((card, index) => {
-                // Numeração Absoluta: Baseada no total de cards do usuário (Card mais antigo é #1)
-                // userCards está ordem decrescente (novo -> velho). 
-                // Então o indice "real" reverso é userCards.length - indexReal. 
-                // Mas aqui estamos iterando o filtered. Para mostrar o número real, precisamos achar o indice no array principal.
+                // Cálculo de número do card (Baseado no total geral)
+                // O array userCards é [novo, velho, mais velho...]
+                // Se userCards tem 10 itens. O index 0 é o card #10. O index 9 é o card #1.
+                // Precisamos achar o indice real no array principal, pois "filtered" altera os indices visuais.
                 const realIndex = userCards.findIndex(uc => uc.uid === card.uid);
                 const cardNumber = userCards.length - realIndex;
 
