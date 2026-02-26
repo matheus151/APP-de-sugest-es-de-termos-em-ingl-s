@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Daily English Unlimited</title>
+    <title>Daily English Infinite</title>
     <style>
         :root {
             --primary: #007AFF;
@@ -12,219 +12,115 @@
             --text: #000000;
             --red: #FF3B30;
             --green: #34C759;
-            --yellow: #FFCC00;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg);
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            color: var(--text);
+            margin: 0; padding: 0; height: 100vh;
+            display: flex; flex-direction: column; overflow: hidden; color: var(--text);
         }
 
         /* HEADER & CONTROLES */
         .header {
-            background: rgba(242, 242, 247, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 40px 15px 10px 15px;
-            border-bottom: 1px solid #ccc;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            background: rgba(242, 242, 247, 0.95); backdrop-filter: blur(10px);
+            padding: 40px 15px 10px 15px; border-bottom: 1px solid #ccc;
+            z-index: 10; display: flex; flex-direction: column; gap: 10px;
         }
 
-        .header-top {
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        .settings-btn { background: none; border: none; font-size: 20px; cursor: pointer; }
 
-        /* SEARCH BAR */
-        .search-container {
-            width: 100%;
-        }
+        .search-container { width: 100%; }
         .search-input {
-            width: 100%;
-            padding: 10px 15px;
-            border-radius: 12px;
-            border: 1px solid #ddd;
-            background: #E5E5EA;
-            font-size: 14px;
-            box-sizing: border-box;
-            outline: none;
+            width: 100%; padding: 10px 15px; border-radius: 12px;
+            border: 1px solid #ddd; background: #E5E5EA; font-size: 14px;
+            box-sizing: border-box; outline: none;
         }
-        .search-input:focus { background: #fff; border-color: var(--primary); }
 
         /* SCROLL CATEGORIAS */
         .cat-scroll {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            padding-bottom: 5px;
+            display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px;
         }
         .cat-scroll::-webkit-scrollbar { display: none; }
-
         .cat-chip {
-            background: #E5E5EA;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            white-space: nowrap;
-            color: #333;
-            border: 1px solid transparent;
-            transition: 0.2s;
+            background: #E5E5EA; padding: 8px 16px; border-radius: 20px;
+            font-size: 13px; font-weight: 600; white-space: nowrap;
+            color: #333; border: 1px solid transparent; transition: 0.2s;
         }
-        .cat-chip.active {
-            background: #000;
-            color: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
+        .cat-chip.active { background: #000; color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
         /* ÁREA DE CONTEÚDO */
-        .view-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            padding-bottom: 120px;
-        }
+        .view-container { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 120px; }
 
-        /* FEED DE CARDS */
+        /* CARDS */
         .card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            position: relative;
-            border-left: 5px solid transparent;
-            transition: transform 0.2s;
+            background: white; border-radius: 20px; padding: 25px; margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06); position: relative; border-left: 5px solid transparent;
         }
-        
         .card.hard-mode { border-left: 5px solid var(--red); }
-
-        /* NUMERAÇÃO DO CARD */
-        .card-number {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 11px;
-            color: #ccc;
-            font-weight: 600;
-        }
-
-        .card-header-row {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 10px;
-            padding-right: 30px;
-        }
-        .card-cat { font-size: 10px; font-weight: 800; color: #999; text-transform: uppercase; letter-spacing: 1px; }
+        .card-number { position: absolute; top: 20px; right: 20px; font-size: 11px; color: #ccc; font-weight: 600; }
         
-        .toggle-hard-btn {
-            background: none; border: none; font-size: 12px; color: #ccc;
-        }
+        .card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-right: 30px; }
+        .card-cat { font-size: 10px; font-weight: 800; color: #999; text-transform: uppercase; letter-spacing: 1px; }
+        .toggle-hard-btn { background: none; border: none; font-size: 12px; color: #ccc; }
         .card.hard-mode .toggle-hard-btn { color: var(--red); font-weight: bold; }
 
         .en-text { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 10px; line-height: 1.2; }
         .pt-text { font-size: 18px; color: #333; margin-bottom: 15px; font-weight: 500; }
-        
-        .ctx-box {
-            background: #f9f9f9; padding: 12px; border-radius: 10px;
-            font-size: 13px; color: #555; line-height: 1.4; margin-bottom: 15px;
-        }
+        .ctx-box { background: #f9f9f9; padding: 12px; border-radius: 10px; font-size: 13px; color: #555; line-height: 1.4; margin-bottom: 15px; }
 
         /* POST-ITS */
-        .post-it-container {
-            display: flex; flex-direction: column; gap: 8px; margin-top: 10px;
-        }
+        .post-it-container { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
         .post-it {
-            background: #FFF8E1;
-            border-left: 3px solid #FFC107;
-            padding: 10px; border-radius: 6px;
-            font-size: 13px; font-family: monospace; color: #444;
-            display: flex; justify-content: space-between; align-items: center;
+            background: #FFF8E1; border-left: 3px solid #FFC107; padding: 10px; border-radius: 6px;
+            font-size: 13px; font-family: monospace; color: #444; display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* AÇÕES DO CARD */
-        .card-actions {
-            display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;
-        }
+        /* BOTOES AÇÃO */
+        .card-actions { display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
         .act-btn {
-            background: #F0F0F5; border: none; border-radius: 15px;
-            padding: 8px 14px; font-size: 13px; font-weight: 600; color: #333;
-            display: flex; align-items: center; gap: 5px; cursor: pointer;
+            background: #F0F0F5; border: none; border-radius: 15px; padding: 8px 14px;
+            font-size: 13px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 5px; cursor: pointer;
         }
-        .act-btn:active { opacity: 0.7; }
 
-        /* BOTÃO GERAR */
+        /* BOTÃO GERAR INFINITO */
         .gen-btn {
-            background: #000; color: white; width: 100%; border: none;
-            padding: 18px; border-radius: 18px; font-size: 16px; font-weight: 700;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin-bottom: 30px;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
+            background: #000; color: white; width: 100%; border: none; padding: 18px; border-radius: 18px;
+            font-size: 16px; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin-bottom: 30px;
+            display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s;
         }
-        .gen-btn:active { transform: scale(0.98); }
+        .gen-btn:disabled { background: #999; transform: none; }
 
         /* BACKUP AREA */
-        .backup-area {
-            margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center;
-        }
-        .backup-btn {
-            background: #E5E5EA; color: #333; border: 1px solid #ccc;
-            padding: 10px 20px; border-radius: 10px; font-size: 12px; margin: 0 5px; cursor: pointer;
-        }
+        .backup-area { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; }
+        .backup-btn { background: #E5E5EA; color: #333; border: 1px solid #ccc; padding: 10px 20px; border-radius: 10px; font-size: 12px; margin: 0 5px; }
 
         /* SRS MODE */
-        .review-mode-container {
-            height: 100%; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; text-align: center;
-        }
-        .flashcard {
-            background: white; width: 90%; max-width: 350px;
-            padding: 40px 20px; border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            min-height: 300px; display: flex; flex-direction: column; justify-content: center;
-        }
+        .review-mode-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .flashcard { background: white; width: 90%; max-width: 350px; padding: 40px 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); min-height: 300px; display: flex; flex-direction: column; justify-content: center; }
         .hidden-content { display: none; margin-top: 20px; animation: fadeIn 0.3s; }
         .hidden-content.visible { display: block; }
         .srs-btns { display: flex; gap: 10px; justify-content: center; margin-top: 25px; }
         .srs-btn { padding: 15px 0; width: 100px; border-radius: 15px; border: none; font-weight: bold; color: white; font-size: 14px; }
         
         /* NAVBAR */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%;
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid #ccc; display: flex; height: 80px;
-            justify-content: space-around; padding-top: 10px; z-index: 100;
-        }
-        .nav-item {
-            background: none; border: none; color: #999;
-            font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px;
-        }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 1px solid #ccc; display: flex; height: 80px; justify-content: space-around; padding-top: 10px; z-index: 100; }
+        .nav-item { background: none; border: none; color: #999; font-size: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item.active { color: var(--primary); }
-        .badge {
-            background: var(--red); color: white; font-size: 10px; 
-            padding: 2px 6px; border-radius: 10px; position: absolute; margin-top: -5px; margin-left: 15px;
-        }
+        .badge { background: var(--red); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; position: absolute; margin-top: -5px; margin-left: 15px; }
 
-        /* MODAL */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); z-index: 200;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: 0.2s;
-        }
+        /* MODAIS */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.2s; }
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
-        .modal { background: white; width: 85%; max-width: 320px; border-radius: 20px; padding: 20px; }
+        .modal { background: white; width: 85%; max-width: 350px; border-radius: 20px; padding: 20px; max-height: 80vh; overflow-y: auto;}
+
+        /* Lista de Categorias no Modal */
+        .cat-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .cat-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-top: 10px; box-sizing: border-box;}
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .hidden { display: none !important; }
-
     </style>
 </head>
 <body>
@@ -232,30 +128,21 @@
     <div id="headerExplore" class="header">
         <div class="header-top">
             <h2 style="margin:0; font-size: 22px;">Meus Cards</h2>
+            <button class="settings-btn" onclick="openSettings()">⚙️</button>
         </div>
         
         <div class="search-container">
             <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar expressão..." onkeyup="handleSearch(this.value)">
         </div>
 
-        <div class="cat-scroll">
-            <button class="cat-chip active" onclick="filterCat('all', this)">Todos</button>
-            <button class="cat-chip" onclick="filterCat('Relacionamento', this)">Relacionamento</button>
-            <button class="cat-chip" onclick="filterCat('Trabalho', this)">Trabalho</button>
-            <button class="cat-chip" onclick="filterCat('Gírias', this)">Gírias</button>
-            <button class="cat-chip" onclick="filterCat('Família', this)">Família</button>
-            <button class="cat-chip" onclick="filterCat('Objetos', this)">Objetos</button>
-            <button class="cat-chip" onclick="filterCat('Lugares', this)">Lugares</button>
-            <button class="cat-chip" onclick="filterCat('Estudos', this)">Estudos</button>
-            <button class="cat-chip" onclick="filterCat('Eleições', this)">Eleições</button>
-            <button class="cat-chip" onclick="filterCat('Economia', this)">Economia</button>
-        </div>
+        <div class="cat-scroll" id="catScrollContainer">
+            </div>
     </div>
 
     <div id="viewExplore" class="view-container">
         
-        <button class="gen-btn" onclick="generateCard()">
-            <span>✨</span> Gerar Nova (Sem Repetir)
+        <button class="gen-btn" id="btnGenerate" onclick="generateCardFromInternet()">
+            <span>✨</span> Buscar Expressão Inédita (Internet)
         </button>
 
         <div id="feedList">
@@ -263,12 +150,11 @@
         </div>
 
         <div class="backup-area">
-            <p style="font-size:10px; color:#999; margin-bottom:10px;">GERENCIAR DADOS</p>
+            <p style="font-size:10px; color:#999; margin-bottom:10px;">GERENCIAR DADOS LOCAIS</p>
             <button class="backup-btn" onclick="backupData()">⬇️ Fazer Backup</button>
             <button class="backup-btn" onclick="document.getElementById('restoreFile').click()">⬆️ Restaurar</button>
             <input type="file" id="restoreFile" style="display:none;" onchange="restoreData(this)">
         </div>
-
     </div>
 
     <div id="viewReview" class="view-container hidden" style="background:#f0f0f5;">
@@ -285,7 +171,31 @@
                 <button onclick="speakModal()" style="padding:10px; border:none; border-radius:8px; background:#ddd;">🔊</button>
             </div>
             <button onclick="saveModal()" style="width:100%; margin-top:15px; background:black; color:white; padding:12px; border:none; border-radius:10px; font-weight:bold;">Salvar Post-it</button>
-            <button onclick="closeModal()" style="width:100%; margin-top:5px; background:none; color:red; padding:10px; border:none;">Cancelar</button>
+            <button onclick="closeModal('modalEx')" style="width:100%; margin-top:5px; background:none; color:red; padding:10px; border:none;">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="modalSettings" class="modal-overlay">
+        <div class="modal">
+            <h2 style="margin-top:0;">Configurações</h2>
+            
+            <div style="background:#f9f9f9; padding:15px; border-radius:10px; margin-bottom:20px;">
+                <h4 style="margin:0 0 10px 0;">🔑 Chave da API (Gemini)</h4>
+                <p style="font-size:12px; color:#666; margin:0 0 10px 0;">Necessária para buscar cards infinitos na internet. Obtenha grátis no Google AI Studio.</p>
+                <input type="password" id="apiKeyInput" class="cat-input" placeholder="Cole sua API Key aqui..." style="margin-top:0;">
+                <button onclick="saveApiKey()" style="margin-top:10px; background:black; color:white; border:none; padding:8px 15px; border-radius:8px; width:100%;">Salvar Chave</button>
+            </div>
+
+            <h4 style="margin:0 0 10px 0;">📂 Suas Categorias</h4>
+            <div id="settingsCatList" style="max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 10px;">
+                </div>
+            
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <input type="text" id="newCatInput" class="cat-input" placeholder="Nova categoria..." style="margin-top:0;">
+                <button onclick="addCategory()" style="background:var(--primary); color:white; border:none; padding:10px 15px; border-radius:8px;">Add</button>
+            </div>
+
+            <button onclick="closeModal('modalSettings')" style="width:100%; margin-top:20px; background:#ddd; color:#333; font-weight:bold; padding:12px; border:none; border-radius:10px;">Fechar</button>
         </div>
     </div>
 
@@ -301,136 +211,29 @@
     </div>
 
     <script>
-        // --- BANCO DE DADOS GIGANTE (Expanded) ---
-        const db = [
-            // RELACIONAMENTO (20 itens)
-            { id: 1001, cat: "Relacionamento", en: "We need to talk", pt: "Precisamos conversar (DR)", ctx: "Geralmente indica notícias ruins ou término.", exs: ["Can you come over? We need to talk.", "She sent a text: 'we need to talk'."] },
-            { id: 1002, cat: "Relacionamento", en: "He stood me up", pt: "Ele me deu um bolo", ctx: "Quando alguém não aparece no encontro marcado.", exs: ["I waited for an hour but he stood me up.", "Don't stand me up again."] },
-            { id: 1003, cat: "Relacionamento", en: "I have a crush on her", pt: "Tenho uma queda por ela", ctx: "Estar interessado romanticamente em alguém.", exs: ["Everybody knows he has a crush on the teacher.", "It's just a silly crush."] },
-            { id: 1004, cat: "Relacionamento", en: "We hit it off", pt: "Nos demos bem de cara", ctx: "Quando a conexão é imediata no primeiro encontro.", exs: ["We met at the party and really hit it off.", "I didn't think we would hit it off."] },
-            { id: 1005, cat: "Relacionamento", en: "Third wheel", pt: "Segurar vela", ctx: "Ser a pessoa sobrando num casal.", exs: ["I don't want to go to the movies and be a third wheel.", "Being a third wheel is awkward."] },
-            { id: 1006, cat: "Relacionamento", en: "Ghosting", pt: "Sumir (Vácuo eterno)", ctx: "Parar de responder mensagens repentinamente.", exs: ["I thought he liked me, but he is ghosting me.", "Ghosting is so immature."] },
-            { id: 1007, cat: "Relacionamento", en: "Pop the question", pt: "Pedir em casamento", ctx: "A expressão clássica para propor noivado.", exs: ["He is going to pop the question tonight.", "Did he pop the question yet?"] },
-            { id: 1008, cat: "Relacionamento", en: "Tie the knot", pt: "Casar-se (Juntar os trapos)", ctx: "Gíria para realizar o casamento.", exs: ["They are tying the knot next summer.", "We finally tied the knot."] },
-            { id: 1009, cat: "Relacionamento", en: "Split the bill", pt: "Rachar a conta", ctx: "Dividir despesas meio a meio.", exs: ["Let's split the bill.", "I prefer to split the bill on the first date."] },
-            { id: 1010, cat: "Relacionamento", en: "On the rocks", pt: "Em crise (relacionamento)", ctx: "Quando o casamento/namoro está prestes a acabar.", exs: ["Their marriage is on the rocks.", "My relationship is on the rocks."] },
-            { id: 1011, cat: "Relacionamento", en: "Blind date", pt: "Encontro às escuras", ctx: "Sair com alguém que você nunca viu.", exs: ["I'm going on a blind date.", "My sister set me up on a blind date."] },
-            { id: 1012, cat: "Relacionamento", en: "Lead someone on", pt: "Iludir alguém", ctx: "Dar esperanças falsas de romance.", exs: ["Don't lead him on if you don't like him.", "She is just leading you on."] },
-            { id: 1013, cat: "Relacionamento", en: "Cheated on", pt: "Traiu (chifrou)", ctx: "Ser infiel no relacionamento.", exs: ["He cheated on her with his secretary.", "I would never cheat on you."] },
-            { id: 1014, cat: "Relacionamento", en: "Make up", pt: "Fazer as pazes", ctx: "Reconciliar após briga.", exs: ["We fought, but we made up.", "Kiss and make up."] },
-            { id: 1015, cat: "Relacionamento", en: "Dumped", pt: "Levou um fora", ctx: "Terminar com alguém (informal).", exs: ["She dumped him yesterday.", "I got dumped via text message."] },
-
-            // TRABALHO (20 itens)
-            { id: 2001, cat: "Trabalho", en: "Let's call it a day", pt: "Vamos encerrar por hoje", ctx: "Fim do expediente.", exs: ["We are tired. Call it a day.", "Let's call it a day guys."] },
-            { id: 2002, cat: "Trabalho", en: "I'm swamped", pt: "Estou atolado", ctx: "Muito ocupado.", exs: ["I can't talk, I'm swamped.", "He is swamped with emails."] },
-            { id: 2003, cat: "Trabalho", en: "Touch base", pt: "Alinhar / Conversar rápido", ctx: "Entrar em contato para atualizar algo.", exs: ["Let's touch base next week.", "I just wanted to touch base with you."] },
-            { id: 2004, cat: "Trabalho", en: "Burnout", pt: "Esgotamento", ctx: "Exaustão extrema pelo trabalho.", exs: ["She is suffering from burnout.", "Avoid burnout by taking breaks."] },
-            { id: 2005, cat: "Trabalho", en: "Think outside the box", pt: "Pensar fora da caixa", ctx: "Ter ideias criativas/inovadoras.", exs: ["We need to think outside the box to solve this.", "He always thinks outside the box."] },
-            { id: 2006, cat: "Trabalho", en: "Get the ball rolling", pt: "Dar o pontapé inicial", ctx: "Começar um projeto ou processo.", exs: ["Let's get the ball rolling on this project.", "Who will get the ball rolling?"] },
-            { id: 2007, cat: "Trabalho", en: "In the loop", pt: "A par do assunto", ctx: "Manter alguém informado.", exs: ["Keep me in the loop.", "Please copy her to keep her in the loop."] },
-            { id: 2008, cat: "Trabalho", en: "Slack off", pt: "Fazer corpo mole", ctx: "Preguiça no trabalho.", exs: ["Don't slack off today.", "He got fired for slacking off."] },
-            { id: 2009, cat: "Trabalho", en: "Pink slip", pt: "Aviso de demissão", ctx: "Expressão para ser demitido.", exs: ["He got the pink slip today.", "Layoffs are coming, many pink slips."] },
-            { id: 2010, cat: "Trabalho", en: "Cut corners", pt: "Fazer nas coxas / Economizar", ctx: "Fazer algo mal feito para economizar tempo/dinheiro.", exs: ["Don't cut corners on safety.", "They cut corners to finish early."] },
-            { id: 2011, cat: "Trabalho", en: "Call the shots", pt: "Dar as cartas (Mandar)", ctx: "Ser quem toma as decisões.", exs: ["Who calls the shots here?", "My boss calls the shots."] },
-            { id: 2012, cat: "Trabalho", en: "Back to the drawing board", pt: "Voltar à estaca zero", ctx: "Recomeçar porque deu errado.", exs: ["The plan failed, back to the drawing board.", "We are back to the drawing board."] },
-            { id: 2013, cat: "Trabalho", en: "Deadline", pt: "Prazo final", ctx: "Data limite de entrega.", exs: ["The deadline is tomorrow.", "I missed the deadline."] },
-            { id: 2014, cat: "Trabalho", en: "Overtime", pt: "Hora extra", ctx: "Trabalhar além do horário.", exs: ["I'm getting paid overtime.", "Too much overtime is tiring."] },
-            { id: 2015, cat: "Trabalho", en: "Day off", pt: "Dia de folga", ctx: "Dia que não trabalha.", exs: ["I need a day off.", "My day off is Monday."] },
-
-            // GÍRIAS (20 itens)
-            { id: 3001, cat: "Gírias", en: "No way!", pt: "Mentira! / Nem ferrando!", ctx: "Surpresa ou negação.", exs: ["You won? No way!", "No way I'm eating that."] },
-            { id: 3002, cat: "Gírias", en: "My bad", pt: "Foi mal", ctx: "Pedir desculpa informal.", exs: ["Oops, my bad.", "My bad, I forgot."] },
-            { id: 3003, cat: "Gírias", en: "Spill the tea", pt: "Conta a fofoca", ctx: "Contar os detalhes do drama.", exs: ["Come on, spill the tea!", "I have some tea to spill."] },
-            { id: 3004, cat: "Gírias", en: "Throw shade", pt: "Jogar indireta/Venenosa", ctx: "Falar mal de alguém sutilmente.", exs: ["She threw shade at him on Twitter.", "Stop throwing shade."] },
-            { id: 3005, cat: "Gírias", en: "Salty", pt: "Amargo / Recalcado", ctx: "Estar chateado ou com inveja.", exs: ["He is salty because he lost.", "Don't be salty."] },
-            { id: 3006, cat: "Gírias", en: "Ghost", pt: "Sumir", ctx: "Sair sem avisar.", exs: ["Did he ghost you?", "I'm going to ghost this party."] },
-            { id: 3007, cat: "Gírias", en: "Lit", pt: "Top / Incrível / Animado", ctx: "Algo muito legal ou festa boa.", exs: ["This party is lit!", "Last night was lit."] },
-            { id: 3008, cat: "Gírias", en: "Lowkey", pt: "No sigilo / Discretamente", ctx: "Algo secreto ou leve.", exs: ["I lowkey like that song.", "Keep it lowkey."] },
-            { id: 3009, cat: "Gírias", en: "Flex", pt: "Ostentar / Se mostrar", ctx: "Exibir dinheiro ou músculos.", exs: ["He loves to flex his watch.", "Weird flex but ok."] },
-            { id: 3010, cat: "Gírias", en: "Cringe", pt: "Vergonha alheia", ctx: "Algo constrangedor.", exs: ["That video is so cringe.", "Stop being cringe."] },
-            { id: 3011, cat: "Gírias", en: "Bail", pt: "Dar o cano / Ir embora", ctx: "Cancelar planos ou sair rápido.", exs: ["Sorry, I have to bail.", "Don't bail on me."] },
-            { id: 3012, cat: "Gírias", en: "Zone out", pt: "Viajar na maionese", ctx: "Perder a atenção.", exs: ["I zoned out during the meeting.", "Sorry, I zoned out."] },
-            { id: 3013, cat: "Gírias", en: "Hang out", pt: "Passar tempo / Dar um rolê", ctx: "Ficar com amigos sem fazer nada específico.", exs: ["Let's hang out later.", "Do you want to hang out?"] },
-            { id: 3014, cat: "Gírias", en: "Rip-off", pt: "Roubo (caro)", ctx: "Preço abusivo.", exs: ["That price is a rip-off.", "What a rip-off!"] },
-            { id: 3015, cat: "Gírias", en: "Bummer", pt: "Que chato / Decepção", ctx: "Algo triste ou inconveniente.", exs: ["It rained? What a bummer.", "That's a bummer."] },
-
-            // FAMÍLIA
-            { id: 4001, cat: "Família", en: "Like father, like son", pt: "Tal pai, tal filho", ctx: "Semelhança.", exs: ["He sleeps like his dad. Like father, like son."] },
-            { id: 4002, cat: "Família", en: "Black sheep", pt: "Ovelha negra", ctx: "O diferente da família.", exs: ["I am the black sheep.", "Every family has a black sheep."] },
-            { id: 4003, cat: "Família", en: "Look after", pt: "Cuidar de", ctx: "Tomar conta.", exs: ["Can you look after the baby?", "I look after my mom."] },
-            { id: 4004, cat: "Família", en: "Upbringing", pt: "Criação/Educação", ctx: "Como foi criado.", exs: ["He had a strict upbringing.", "Good upbringing matters."] },
-            { id: 4005, cat: "Família", en: "Runs in the family", pt: "É de família", ctx: "Genético.", exs: ["It runs in the family.", "Blue eyes run in the family."] },
-            { id: 4006, cat: "Família", en: "Siblings", pt: "Irmãos (gênero neutro)", ctx: "Irmãos e irmãs.", exs: ["Do you have siblings?", "I have three siblings."] },
-            { id: 4007, cat: "Família", en: "Breadwinner", pt: "Sustento da casa", ctx: "Quem ganha o dinheiro da família.", exs: ["She is the breadwinner.", "Being the breadwinner is stressful."] },
-            { id: 4008, cat: "Família", en: "Take after", pt: "Puxar a (alguém)", ctx: "Parecer com parente.", exs: ["I take after my mother.", "He takes after his grandpa."] },
-
-             // OBJETOS
-            { id: 5001, cat: "Objetos", en: "Power strip", pt: "Régua / Extensão", ctx: "Várias tomadas.", exs: ["Plug it in the power strip."] },
-            { id: 5002, cat: "Objetos", en: "Coaster", pt: "Porta-copos", ctx: "Apoio de bebida.", exs: ["Use a coaster please."] },
-            { id: 5003, cat: "Objetos", en: "Plunger", pt: "Desentupidor", ctx: "Para banheiro.", exs: ["Get the plunger."] },
-            { id: 5004, cat: "Objetos", en: "Remote is dead", pt: "Controle sem pilha", ctx: "Bateria acabou.", exs: ["The remote is dead."] },
-            { id: 5005, cat: "Objetos", en: "Extension cord", pt: "Extensão (fio)", ctx: "Fio longo.", exs: ["I need an extension cord."] },
-            { id: 5006, cat: "Objetos", en: "Q-tip", pt: "Cotonete", ctx: "Marca que virou nome.", exs: ["Do you have a Q-tip?", "Don't put Q-tips in your ear."] },
-            { id: 5007, cat: "Objetos", en: "Band-aid", pt: "Curativo", ctx: "Marca virou nome.", exs: ["I need a band-aid.", "It's just a band-aid solution."] },
-            { id: 5008, cat: "Objetos", en: "Hanger", pt: "Cabide", ctx: "Para pendurar roupa.", exs: ["Put it on a hanger.", "Plastic hanger."] },
-            { id: 5009, cat: "Objetos", en: "Stapler", pt: "Grampeador", ctx: "Escritório.", exs: ["Pass me the stapler.", "The stapler is empty."] },
-            { id: 5010, cat: "Objetos", en: "Duct tape", pt: "Fita adesiva (prata)", ctx: "Fita forte.", exs: ["Fix it with duct tape.", "Duct tape fixes everything."] },
-
-            // LUGARES
-            { id: 6001, cat: "Lugares", en: "Downtown", pt: "Centro", ctx: "Área comercial.", exs: ["Let's go downtown."] },
-            { id: 6002, cat: "Lugares", en: "Suburbs", pt: "Subúrbio (Residencial)", ctx: "Bairros residenciais.", exs: ["Living in the suburbs."] },
-            { id: 6003, cat: "Lugares", en: "Gated community", pt: "Condomínio fechado", ctx: "Segurança.", exs: ["Nice gated community."] },
-            { id: 6004, cat: "Lugares", en: "Cul-de-sac", pt: "Rua sem saída (redonda)", ctx: "Rua residencial.", exs: ["We live in a cul-de-sac."] },
-            { id: 6005, cat: "Lugares", en: "High rise", pt: "Arranha-céu", ctx: "Prédio alto.", exs: ["He works in a high rise."] },
-
-            // ESTUDOS
-            { id: 7001, cat: "Estudos", en: "Pull an all-nighter", pt: "Passar noite em claro", ctx: "Estudar a noite toda.", exs: ["I pulled an all-nighter."] },
-            { id: 7002, cat: "Estudos", en: "Mind went blank", pt: "Deu branco", ctx: "Esquecer.", exs: ["My mind went blank."] },
-            { id: 7003, cat: "Estudos", en: "Hit the books", pt: "Estudar muito", ctx: "Começar a estudar.", exs: ["Time to hit the books."] },
-            { id: 7004, cat: "Estudos", en: "Dropout", pt: "Desistente", ctx: "Largou escola.", exs: ["He is a dropout."] },
-            { id: 7005, cat: "Estudos", en: "Ace the test", pt: "Gabaritar", ctx: "Ir muito bem.", exs: ["I aced the test."] },
-            { id: 7006, cat: "Estudos", en: "Cram", pt: "Estudar de última hora", ctx: "Decorar antes da prova.", exs: ["I have to cram for the test."] },
-            { id: 7007, cat: "Estudos", en: "Flunk", pt: "Bombarde (reprovar)", ctx: "Falhar na matéria.", exs: ["I flunked math.", "Don't flunk."] },
-            { id: 7008, cat: "Estudos", en: "Teacher's pet", pt: "Queridinho do professor", ctx: "Aluno favorito.", exs: ["Nobody likes a teacher's pet."] },
-
-            // ECONOMIA & ELEIÇÕES
-            { id: 8001, cat: "Economia", en: "Inflation skyrocketed", pt: "Inflação disparou", ctx: "Preços subindo.", exs: ["Prices skyrocketed."] },
-            { id: 8002, cat: "Economia", en: "Make ends meet", pt: "Fechar as contas", ctx: "Sobreviver com o salário.", exs: ["Hard to make ends meet."] },
-            { id: 8003, cat: "Economia", en: "Side hustle", pt: "Renda extra", ctx: "Trabalho extra.", exs: ["I need a side hustle."] },
-            { id: 8004, cat: "Eleições", en: "Close race", pt: "Disputa acirrada", ctx: "Empate técnico.", exs: ["It's a close race."] },
-            { id: 8005, cat: "Eleições", en: "Landslide", pt: "Vitória esmagadora", ctx: "Ganhar por muito.", exs: ["Won by a landslide."] },
-            { id: 8006, cat: "Eleições", en: "Turnout", pt: "Comparecimento", ctx: "Pessoas que votaram.", exs: ["Low voter turnout."] }
-        ];
-
-        // --- ESTADO DO APP ---
-        let userCards = JSON.parse(localStorage.getItem('englishApp_v5')) || [];
-        let currentCat = localStorage.getItem('englishApp_lastCat') || 'all'; 
+        // --- GERENCIAMENTO DE ESTADO ---
+        let userCards = JSON.parse(localStorage.getItem('englishApp_v6')) || [];
         let searchTerm = "";
         let reviewQueue = [];
         let currentReviewIndex = 0;
         let activeCardId = null;
         let tempExample = "";
+        let pendingExamples = []; // Guarda exemplos extras gerados pela API
+
+        // Categorias Dinâmicas
+        const defaultCats = ['Relacionamento', 'Família', 'Objetos', 'Lugares', 'Trabalho', 'Estudos', 'Eleições', 'Economia', 'Comida'];
+        let categories = JSON.parse(localStorage.getItem('englishApp_cats')) || defaultCats;
+        let currentCat = localStorage.getItem('englishApp_lastCat') || 'all';
 
         // --- INICIALIZAÇÃO ---
         window.onload = () => {
+            renderCategoryChips();
             updateReviewBadge();
-            
-            document.querySelectorAll('.cat-chip').forEach(btn => {
-                btn.classList.remove('active');
-                const btnTxt = btn.innerText;
-                if((currentCat === 'all' && btnTxt === 'Todos') || btnTxt === currentCat) {
-                    btn.classList.add('active');
-                }
-            });
-
             renderFeed();
 
-            // Persistência de Scroll
             const savedScroll = localStorage.getItem('englishApp_scrollPos');
             if(savedScroll) {
-                setTimeout(() => {
-                    document.getElementById('viewExplore').scrollTop = savedScroll;
-                }, 100);
+                setTimeout(() => { document.getElementById('viewExplore').scrollTop = savedScroll; }, 100);
             }
         };
 
@@ -438,12 +241,20 @@
             localStorage.setItem('englishApp_scrollPos', this.scrollTop);
         };
 
-        // --- BUSCA E FILTRO ---
-        function filterCat(cat, btn) {
+        // --- RENDERIZAR CATEGORIAS UI ---
+        function renderCategoryChips() {
+            const container = document.getElementById('catScrollContainer');
+            container.innerHTML = `<button class="cat-chip ${currentCat === 'all' ? 'active' : ''}" onclick="filterCat('all')">Todos</button>`;
+            
+            categories.forEach(cat => {
+                container.innerHTML += `<button class="cat-chip ${currentCat === cat ? 'active' : ''}" onclick="filterCat('${cat}')">${cat}</button>`;
+            });
+        }
+
+        function filterCat(cat) {
             currentCat = cat;
             localStorage.setItem('englishApp_lastCat', cat);
-            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
+            renderCategoryChips();
             renderFeed();
         }
 
@@ -452,42 +263,91 @@
             renderFeed();
         }
 
-        // --- GERADOR (CORE) ---
-        function generateCard() {
-            const existingIds = userCards.map(c => c.id);
-            let availablePool = db.filter(item => {
-                const isCatMatch = currentCat === 'all' || item.cat === currentCat;
-                const isNew = !existingIds.includes(item.id);
-                return isCatMatch && isNew;
-            });
-            
-            if(availablePool.length === 0) {
-                alert("Você já baixou todas as frases disponíveis nesta categoria! Tente outra ou use a busca para revisar.");
+        // --- GERADOR INFINITO (API) ---
+        async function generateCardFromInternet() {
+            const apiKey = localStorage.getItem('gemini_api_key');
+            if(!apiKey) {
+                alert("Para gerar cards infinitos da internet, você precisa configurar uma Chave de API primeiro.");
+                openSettings();
                 return;
             }
 
-            const item = availablePool[Math.floor(Math.random() * availablePool.length)];
+            // Identifica se estamos em uma categoria específica ou se devemos escolher uma aleatória das existentes
+            const targetCat = currentCat === 'all' 
+                ? categories[Math.floor(Math.random() * categories.length)] 
+                : currentCat;
 
-            const newCard = {
-                uid: Date.now().toString(),
-                id: item.id,
-                cat: item.cat,
-                en: item.en,
-                pt: item.pt,
-                ctx: item.ctx,
-                savedExs: [],
-                nextReview: Date.now(),
-                interval: 1,
-                isHard: false
-            };
+            // Pega as últimas 15 expressões dessa categoria já geradas para evitar repetição recente
+            const existingInCat = userCards.filter(c => c.cat === targetCat).slice(0, 15).map(c => c.en).join(", ");
 
-            userCards.unshift(newCard);
-            saveData();
-            renderFeed();
-            updateReviewBadge();
-            
-            // Scroll para topo
-            document.getElementById('viewExplore').scrollTo({ top: 0, behavior: 'smooth' });
+            const btn = document.getElementById('btnGenerate');
+            btn.disabled = true;
+            btn.innerHTML = `⏳ Buscando na internet...`;
+
+            // Prompt estruturado para a Inteligência Artificial
+            const prompt = `Você é um professor de inglês nativo dos EUA. Gere uma expressão, gíria ou frase altamente comum do dia a dia americano relacionada à categoria "${targetCat}". 
+            Regra 1: NÃO repita estas expressões: [${existingInCat}]. 
+            Regra 2: Retorne APENAS um JSON válido, sem formatação markdown, sem backticks, estritamente neste formato:
+            {
+                "en": "A expressão em inglês",
+                "pt": "A tradução natural em português do Brasil",
+                "ctx": "Uma breve explicação do contexto de uso no dia a dia",
+                "exs": ["Exemplo de uso 1 em inglês", "Exemplo de uso 2 em inglês", "Exemplo de uso 3 em inglês", "Exemplo de uso 4 em inglês"]
+            }`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.9 }
+                    })
+                });
+
+                if(!response.ok) throw new Error("Falha na API. Verifique sua chave.");
+
+                const data = await response.json();
+                const textResponse = data.candidates[0].content.parts[0].text;
+                
+                // Limpa possíveis backticks do retorno do JSON
+                const cleanJsonStr = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+                const result = JSON.parse(cleanJsonStr);
+
+                // Criar Card
+                const newCard = {
+                    uid: Date.now().toString(),
+                    cat: targetCat,
+                    en: result.en,
+                    pt: result.pt,
+                    ctx: result.ctx,
+                    availableExs: result.exs, // Exemplos gerados guardados no background
+                    savedExs: [],
+                    nextReview: Date.now(),
+                    interval: 1,
+                    isHard: false
+                };
+
+                userCards.unshift(newCard);
+                saveData();
+                
+                // Força o filtro para mostrar a categoria do card gerado
+                if(currentCat !== 'all' && currentCat !== targetCat) {
+                    filterCat(targetCat);
+                } else {
+                    renderFeed();
+                }
+
+                updateReviewBadge();
+                document.getElementById('viewExplore').scrollTo({ top: 0, behavior: 'smooth' });
+
+            } catch(err) {
+                alert("Erro ao buscar na internet. Tente novamente ou verifique se sua API Key está correta.");
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<span>✨</span> Buscar Expressão Inédita (Internet)`;
+            }
         }
 
         function renderFeed() {
@@ -503,15 +363,11 @@
             });
 
             if(filtered.length === 0) {
-                feed.innerHTML = '<div style="text-align:center; color:#999; margin-top:30px;">Nenhum card encontrado.</div>';
+                feed.innerHTML = '<div style="text-align:center; color:#999; margin-top:30px;">Nenhum card encontrado. Gere um novo!</div>';
                 return;
             }
 
-            filtered.forEach((card, index) => {
-                // Cálculo de número do card (Baseado no total geral)
-                // O array userCards é [novo, velho, mais velho...]
-                // Se userCards tem 10 itens. O index 0 é o card #10. O index 9 é o card #1.
-                // Precisamos achar o indice real no array principal, pois "filtered" altera os indices visuais.
+            filtered.forEach((card) => {
                 const realIndex = userCards.findIndex(uc => uc.uid === card.uid);
                 const cardNumber = userCards.length - realIndex;
 
@@ -525,28 +381,19 @@
                 const html = `
                     <div class="card ${card.isHard ? 'hard-mode' : ''}">
                         <div class="card-number">#${cardNumber}</div>
-                        
                         <div class="card-header-row">
                             <span class="card-cat">${card.cat}</span>
                             <button class="toggle-hard-btn" onclick="toggleHard('${card.uid}')">
                                 ${card.isHard ? '★ DIFÍCIL' : '☆ Marcar Difícil'}
                             </button>
                         </div>
-
                         <div class="en-text">${card.en}</div>
                         <div class="pt-text">${card.pt}</div>
-                        
-                        <div class="ctx-box">
-                            <strong>Contexto:</strong> ${card.ctx}
-                        </div>
-
-                        <div class="post-it-container">
-                            ${exsHTML}
-                        </div>
-
+                        <div class="ctx-box"><strong>Contexto:</strong> ${card.ctx}</div>
+                        <div class="post-it-container">${exsHTML}</div>
                         <div class="card-actions">
                             <button class="act-btn" onclick="speak('${card.en.replace(/'/g, "\\'")}')">🔊 Ouvir</button>
-                            <button class="act-btn" onclick="openModal('${card.uid}')">➕ Post-it Exemplo</button>
+                            <button class="act-btn" onclick="openExamplesModal('${card.uid}')">➕ Post-it Exemplo</button>
                             <button class="act-btn" style="color:red; margin-left:auto;" onclick="deleteCard('${card.uid}')">🗑️</button>
                         </div>
                     </div>
@@ -555,211 +402,184 @@
             });
         }
 
-        function toggleHard(uid) {
-            const card = userCards.find(c => c.uid === uid);
-            if(card) {
-                card.isHard = !card.isHard;
-                if(card.isHard) { card.interval = 1; card.nextReview = Date.now(); }
-                saveData();
-                renderFeed();
-                updateReviewBadge();
-            }
-        }
-
-        // --- SRS / REVISÃO ---
-        function switchView(view) {
-            const vExp = document.getElementById('viewExplore');
-            const vRev = document.getElementById('viewReview');
-            const hExp = document.getElementById('headerExplore');
-            
-            if(view === 'explore') {
-                vExp.classList.remove('hidden');
-                hExp.classList.remove('hidden');
-                vRev.classList.add('hidden');
-                document.getElementById('navExp').classList.add('active');
-                document.getElementById('navRev').classList.remove('active');
-                renderFeed(); 
-            } else {
-                vExp.classList.add('hidden');
-                hExp.classList.add('hidden');
-                vRev.classList.remove('hidden');
-                document.getElementById('navExp').classList.remove('active');
-                document.getElementById('navRev').classList.add('active');
-                startReview();
-            }
-        }
-
-        function startReview() {
-            const now = Date.now();
-            reviewQueue = userCards.filter(c => c.nextReview <= now);
-            currentReviewIndex = 0;
-            renderReviewCard();
-        }
-
-        function renderReviewCard() {
-            const container = document.getElementById('reviewContainer');
-            
-            if(reviewQueue.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align:center;">
-                        <div style="font-size:50px;">🎉</div>
-                        <h2>Tudo em dia!</h2>
-                        <p>Você não tem revisões pendentes agora.</p>
-                        <button onclick="switchView('explore')" class="act-btn" style="margin:20px auto; background:black; color:white;">Voltar para Explorar</button>
-                    </div>
-                `;
-                return;
-            }
-
-            if(currentReviewIndex >= reviewQueue.length) {
-                container.innerHTML = `
-                    <div style="text-align:center;">
-                        <h2>Sessão Concluída!</h2>
-                        <p>Volte amanhã para mais.</p>
-                        <button onclick="switchView('explore')" class="act-btn" style="margin:20px auto; background:black; color:white;">Voltar</button>
-                    </div>
-                `;
-                return;
-            }
-
-            const card = reviewQueue[currentReviewIndex];
-            
-            container.innerHTML = `
-                <div class="flashcard">
-                    <span style="font-size:12px; color:#999; text-transform:uppercase;">${card.cat}</span>
-                    <h2 style="font-size:28px; color:var(--primary); margin:20px 0;">${card.en}</h2>
-                    <button class="act-btn" style="margin:0 auto;" onclick="speak('${card.en.replace(/'/g, "\\'")}')">🔊 Ouvir</button>
-                    
-                    <button id="revealBtn" onclick="document.getElementById('hiddenArea').classList.add('visible'); this.style.display='none';" style="margin-top:40px; background:black; color:white; padding:15px; border:none; border-radius:15px; width:100%; font-weight:bold;">
-                        👁️ Mostrar Resposta
-                    </button>
-
-                    <div id="hiddenArea" class="hidden-content">
-                        <div style="font-size:20px; font-weight:500; margin-bottom:10px;">${card.pt}</div>
-                        <div style="color:#666; font-size:14px;">${card.ctx}</div>
-                        
-                        <div class="srs-btns">
-                            <button class="srs-btn" style="background:var(--red);" onclick="processSRS('hard')">Difícil 🥵</button>
-                            <button class="srs-btn" style="background:var(--green);" onclick="processSRS('easy')">Fácil 😎</button>
-                        </div>
-                    </div>
-                </div>
-                <p style="margin-top:20px; color:#666;">Card ${currentReviewIndex + 1} de ${reviewQueue.length}</p>
-            `;
-        }
-
-        function processSRS(difficulty) {
-            const card = reviewQueue[currentReviewIndex];
-            const realCard = userCards.find(c => c.uid === card.uid);
-
-            if (difficulty === 'hard') {
-                realCard.interval = 1;
-                realCard.isHard = true; 
-            } else {
-                realCard.interval = Math.ceil(realCard.interval * 2);
-                realCard.isHard = false;
-            }
-
-            realCard.nextReview = Date.now() + (realCard.interval * 24 * 60 * 60 * 1000);
-            saveData();
-            currentReviewIndex++;
-            renderReviewCard();
-            updateReviewBadge();
-        }
-
-        // --- MODAL / AUXILIARES ---
-        function openModal(uid) {
+        // --- MODAL DE EXEMPLOS ---
+        function openExamplesModal(uid) {
             activeCardId = uid;
+            const card = userCards.find(c => c.uid === uid);
+            if(!card.availableExs || card.availableExs.length === 0) {
+                alert("Nenhum exemplo extra disponível para este card legado.");
+                return;
+            }
+            pendingExamples = [...card.availableExs]; // Copia o array
             document.getElementById('modalEx').classList.add('show');
             cycleModal();
         }
         
         function cycleModal() {
-            if(!activeCardId) return;
-            const card = userCards.find(c => c.uid === activeCardId);
-            const dbItem = db.find(i => i.id === card.id);
-            const rand = dbItem.exs[Math.floor(Math.random() * dbItem.exs.length)];
-            tempExample = rand;
-            document.getElementById('modalText').innerText = `"${rand}"`;
+            if(pendingExamples.length === 0) {
+                document.getElementById('modalText').innerText = "Não há mais exemplos diferentes para esta frase gerados no momento.";
+                return;
+            }
+            // Pega um aleatório dos disponíveis
+            const randIndex = Math.floor(Math.random() * pendingExamples.length);
+            tempExample = pendingExamples[randIndex];
+            document.getElementById('modalText').innerText = `"${tempExample}"`;
         }
 
-        function speakModal() { speak(tempExample); }
+        function speakModal() { if(tempExample) speak(tempExample); }
 
         function saveModal() {
+            if(!tempExample) return;
             const card = userCards.find(c => c.uid === activeCardId);
-            if(card) {
+            if(card && !card.savedExs.includes(tempExample)) {
                 card.savedExs.push(tempExample);
                 saveData();
                 renderFeed();
-                closeModal();
+                closeModal('modalEx');
             }
         }
 
-        function closeModal() {
-            document.getElementById('modalEx').classList.remove('show');
-            activeCardId = null;
+        // --- CONFIGURAÇÕES E CATEGORIAS ---
+        function openSettings() {
+            document.getElementById('apiKeyInput').value = localStorage.getItem('gemini_api_key') || "";
+            renderSettingsCatList();
+            document.getElementById('modalSettings').classList.add('show');
         }
 
-        // --- BACKUP ---
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            localStorage.setItem('gemini_api_key', key);
+            alert("Chave salva com sucesso!");
+        }
+
+        function renderSettingsCatList() {
+            const list = document.getElementById('settingsCatList');
+            list.innerHTML = '';
+            categories.forEach((cat, index) => {
+                list.innerHTML += `
+                    <div class="cat-list-item">
+                        <span style="font-weight:bold;">${cat}</span>
+                        <button onclick="deleteCategory(${index})" style="background:none; border:none; color:red; font-size:18px; cursor:pointer;">✖</button>
+                    </div>
+                `;
+            });
+        }
+
+        function addCategory() {
+            const input = document.getElementById('newCatInput');
+            const val = input.value.trim();
+            if(val && !categories.includes(val)) {
+                categories.push(val);
+                localStorage.setItem('englishApp_cats', JSON.stringify(categories));
+                input.value = "";
+                renderSettingsCatList();
+                renderCategoryChips();
+            }
+        }
+
+        function deleteCategory(index) {
+            if(confirm(`Tem certeza que deseja excluir a categoria "${categories[index]}"? (Os cards existentes não serão apagados)`)) {
+                categories.splice(index, 1);
+                localStorage.setItem('englishApp_cats', JSON.stringify(categories));
+                if(currentCat === categories[index]) {
+                    currentCat = 'all';
+                    localStorage.setItem('englishApp_lastCat', 'all');
+                }
+                renderSettingsCatList();
+                renderCategoryChips();
+                renderFeed();
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+            if(modalId === 'modalEx') activeCardId = null;
+        }
+
+        // --- RESTO DO CÓDIGO (SRS, BACKUP, ETC) IGUAL ANTERIORMENTE ---
+        function toggleHard(uid) {
+            const card = userCards.find(c => c.uid === uid);
+            if(card) { card.isHard = !card.isHard; if(card.isHard) { card.interval = 1; card.nextReview = Date.now(); } saveData(); renderFeed(); updateReviewBadge(); }
+        }
+
+        function switchView(view) {
+            const vExp = document.getElementById('viewExplore'); const vRev = document.getElementById('viewReview'); const hExp = document.getElementById('headerExplore');
+            if(view === 'explore') {
+                vExp.classList.remove('hidden'); hExp.classList.remove('hidden'); vRev.classList.add('hidden');
+                document.getElementById('navExp').classList.add('active'); document.getElementById('navRev').classList.remove('active');
+                renderFeed(); 
+            } else {
+                vExp.classList.add('hidden'); hExp.classList.add('hidden'); vRev.classList.remove('hidden');
+                document.getElementById('navExp').classList.remove('active'); document.getElementById('navRev').classList.add('active');
+                startReview();
+            }
+        }
+
+        function startReview() {
+            reviewQueue = userCards.filter(c => c.nextReview <= Date.now());
+            currentReviewIndex = 0; renderReviewCard();
+        }
+
+        function renderReviewCard() {
+            const container = document.getElementById('reviewContainer');
+            if(reviewQueue.length === 0) { container.innerHTML = `<div style="text-align:center;"><div style="font-size:50px;">🎉</div><h2>Tudo em dia!</h2><button onclick="switchView('explore')" class="act-btn" style="margin:20px auto; background:black; color:white;">Voltar</button></div>`; return; }
+            if(currentReviewIndex >= reviewQueue.length) { container.innerHTML = `<div style="text-align:center;"><h2>Sessão Concluída!</h2><button onclick="switchView('explore')" class="act-btn" style="margin:20px auto; background:black; color:white;">Voltar</button></div>`; return; }
+
+            const card = reviewQueue[currentReviewIndex];
+            container.innerHTML = `
+                <div class="flashcard">
+                    <span style="font-size:12px; color:#999; text-transform:uppercase;">${card.cat}</span>
+                    <h2 style="font-size:28px; color:var(--primary); margin:20px 0;">${card.en}</h2>
+                    <button class="act-btn" style="margin:0 auto;" onclick="speak('${card.en.replace(/'/g, "\\'")}')">🔊 Ouvir</button>
+                    <button id="revealBtn" onclick="document.getElementById('hiddenArea').classList.add('visible'); this.style.display='none';" style="margin-top:40px; background:black; color:white; padding:15px; border:none; border-radius:15px; width:100%; font-weight:bold;">👁️ Mostrar Resposta</button>
+                    <div id="hiddenArea" class="hidden-content">
+                        <div style="font-size:20px; font-weight:500; margin-bottom:10px;">${card.pt}</div>
+                        <div style="color:#666; font-size:14px;">${card.ctx}</div>
+                        <div class="srs-btns">
+                            <button class="srs-btn" style="background:var(--red);" onclick="processSRS('hard')">Difícil 🥵</button>
+                            <button class="srs-btn" style="background:var(--green);" onclick="processSRS('easy')">Fácil 😎</button>
+                        </div>
+                    </div>
+                </div><p style="margin-top:20px; color:#666;">Card ${currentReviewIndex + 1} de ${reviewQueue.length}</p>`;
+        }
+
+        function processSRS(difficulty) {
+            const realCard = userCards.find(c => c.uid === reviewQueue[currentReviewIndex].uid);
+            if (difficulty === 'hard') { realCard.interval = 1; realCard.isHard = true; } else { realCard.interval = Math.ceil(realCard.interval * 2); realCard.isHard = false; }
+            realCard.nextReview = Date.now() + (realCard.interval * 24 * 60 * 60 * 1000);
+            saveData(); currentReviewIndex++; renderReviewCard(); updateReviewBadge();
+        }
+
         function backupData() {
-            const dataStr = JSON.stringify(userCards);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const dataStr = JSON.stringify({ cards: userCards, cats: categories });
             const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', 'meus_cards_ingles.json');
+            linkElement.setAttribute('href', 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr));
+            linkElement.setAttribute('download', 'meus_cards_infinitos.json');
             linkElement.click();
         }
 
         function restoreData(input) {
-            const file = input.files[0];
-            if(!file) return;
+            const file = input.files[0]; if(!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if(Array.isArray(data)) {
-                        if(confirm("Substituir dados atuais pelo backup?")) {
-                            userCards = data;
-                            saveData();
-                            location.reload();
-                        }
-                    } else { alert("Arquivo inválido."); }
+                    // Suporta o formato novo e o legado
+                    const importedCards = Array.isArray(data) ? data : data.cards;
+                    if(confirm("Substituir dados atuais pelo backup?")) {
+                        userCards = importedCards;
+                        if(data.cats) { categories = data.cats; localStorage.setItem('englishApp_cats', JSON.stringify(categories)); }
+                        saveData(); location.reload();
+                    }
                 } catch(err) { alert("Erro ao ler o arquivo."); }
             };
             reader.readAsText(file);
         }
 
-        // --- UTIL ---
-        function updateReviewBadge() {
-            const now = Date.now();
-            const count = userCards.filter(c => c.nextReview <= now).length;
-            const badge = document.getElementById('revBadge');
-            if(count > 0) {
-                badge.innerText = count;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
-
-        function deleteCard(uid) {
-            if(confirm("Apagar este card?")) {
-                userCards = userCards.filter(c => c.uid !== uid);
-                saveData();
-                renderFeed();
-                updateReviewBadge();
-            }
-        }
-
-        function speak(text) {
-            const u = new SpeechSynthesisUtterance(text);
-            u.lang = 'en-US';
-            window.speechSynthesis.speak(u);
-        }
-
-        function saveData() {
-            localStorage.setItem('englishApp_v5', JSON.stringify(userCards));
-        }
+        function updateReviewBadge() { const count = userCards.filter(c => c.nextReview <= Date.now()).length; const badge = document.getElementById('revBadge'); if(count > 0) { badge.innerText = count; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); } }
+        function deleteCard(uid) { if(confirm("Apagar este card?")) { userCards = userCards.filter(c => c.uid !== uid); saveData(); renderFeed(); updateReviewBadge(); } }
+        function speak(text) { const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; window.speechSynthesis.speak(u); }
+        function saveData() { localStorage.setItem('englishApp_v6', JSON.stringify(userCards)); }
 
     </script>
 </body>
