@@ -218,7 +218,7 @@
         let currentReviewIndex = 0;
         let activeCardId = null;
         let tempExample = "";
-        let pendingExamples = []; // Guarda exemplos extras gerados pela API
+        let pendingExamples = [];
 
         // Categorias Dinâmicas
         const defaultCats = ['Relacionamento', 'Família', 'Objetos', 'Lugares', 'Trabalho', 'Estudos', 'Eleições', 'Economia', 'Comida'];
@@ -272,24 +272,23 @@
                 return;
             }
 
-            // Identifica se estamos em uma categoria específica ou se devemos escolher uma aleatória das existentes
             const targetCat = currentCat === 'all' 
                 ? categories[Math.floor(Math.random() * categories.length)] 
                 : currentCat;
 
-            // Pega as últimas 15 expressões dessa categoria já geradas para evitar repetição recente
             const existingInCat = userCards.filter(c => c.cat === targetCat).slice(0, 15).map(c => c.en).join(", ");
 
             const btn = document.getElementById('btnGenerate');
             btn.disabled = true;
             btn.innerHTML = `⏳ Buscando na internet...`;
 
-            // Prompt estruturado para a Inteligência Artificial
-            const prompt = `Você é um professor de inglês nativo dos EUA. Gere uma expressão, gíria ou frase altamente comum do dia a dia americano relacionada à categoria "${targetCat}". 
+            // PROMPT ATUALIZADO E MAIS RÍGIDO
+            const prompt = `Você é um professor de inglês nativo dos EUA. Crie um card de estudo com um vocabulário, expressão ou frase do dia a dia americano ESTRITAMENTE pertencente ao tema "${targetCat}". 
+            É obrigatório respeitar a categoria. Por exemplo, se a categoria for "Objetos", retorne obrigatoriamente um objeto físico. Se for "Trabalho", retorne algo do mundo corporativo. Não use gírias aleatórias se a categoria não for "Gírias".
             Regra 1: NÃO repita estas expressões: [${existingInCat}]. 
             Regra 2: Retorne APENAS um JSON válido, sem formatação markdown, sem backticks, estritamente neste formato:
             {
-                "en": "A expressão em inglês",
+                "en": "A expressão, objeto ou palavra em inglês",
                 "pt": "A tradução natural em português do Brasil",
                 "ctx": "Uma breve explicação do contexto de uso no dia a dia",
                 "exs": ["Exemplo de uso 1 em inglês", "Exemplo de uso 2 em inglês", "Exemplo de uso 3 em inglês", "Exemplo de uso 4 em inglês"]
@@ -310,18 +309,16 @@
                 const data = await response.json();
                 const textResponse = data.candidates[0].content.parts[0].text;
                 
-                // Limpa possíveis backticks do retorno do JSON
                 const cleanJsonStr = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
                 const result = JSON.parse(cleanJsonStr);
 
-                // Criar Card
                 const newCard = {
                     uid: Date.now().toString(),
                     cat: targetCat,
                     en: result.en,
                     pt: result.pt,
                     ctx: result.ctx,
-                    availableExs: result.exs, // Exemplos gerados guardados no background
+                    availableExs: result.exs,
                     savedExs: [],
                     nextReview: Date.now(),
                     interval: 1,
@@ -331,7 +328,6 @@
                 userCards.unshift(newCard);
                 saveData();
                 
-                // Força o filtro para mostrar a categoria do card gerado
                 if(currentCat !== 'all' && currentCat !== targetCat) {
                     filterCat(targetCat);
                 } else {
@@ -410,7 +406,7 @@
                 alert("Nenhum exemplo extra disponível para este card legado.");
                 return;
             }
-            pendingExamples = [...card.availableExs]; // Copia o array
+            pendingExamples = [...card.availableExs];
             document.getElementById('modalEx').classList.add('show');
             cycleModal();
         }
@@ -420,7 +416,6 @@
                 document.getElementById('modalText').innerText = "Não há mais exemplos diferentes para esta frase gerados no momento.";
                 return;
             }
-            // Pega um aleatório dos disponíveis
             const randIndex = Math.floor(Math.random() * pendingExamples.length);
             tempExample = pendingExamples[randIndex];
             document.getElementById('modalText').innerText = `"${tempExample}"`;
@@ -496,7 +491,7 @@
             if(modalId === 'modalEx') activeCardId = null;
         }
 
-        // --- RESTO DO CÓDIGO (SRS, BACKUP, ETC) IGUAL ANTERIORMENTE ---
+        // --- RESTO DO CÓDIGO (SRS, BACKUP) ---
         function toggleHard(uid) {
             const card = userCards.find(c => c.uid === uid);
             if(card) { card.isHard = !card.isHard; if(card.isHard) { card.interval = 1; card.nextReview = Date.now(); } saveData(); renderFeed(); updateReviewBadge(); }
@@ -564,7 +559,6 @@
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    // Suporta o formato novo e o legado
                     const importedCards = Array.isArray(data) ? data : data.cards;
                     if(confirm("Substituir dados atuais pelo backup?")) {
                         userCards = importedCards;
