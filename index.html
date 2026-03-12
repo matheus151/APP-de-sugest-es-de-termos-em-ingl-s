@@ -37,6 +37,7 @@
             border: 1px solid #ddd; background: #E5E5EA; font-size: 14px;
             box-sizing: border-box; outline: none;
         }
+        .search-input:focus { background: #fff; border-color: var(--primary); }
 
         /* SCROLL CATEGORIAS */
         .cat-scroll {
@@ -84,11 +85,20 @@
             font-size: 13px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 5px; cursor: pointer;
         }
 
-        /* BOTÃO GERAR INFINITO */
+        /* ÁREA GERAR INFINITO */
+        .generator-area {
+            background: white; border-radius: 20px; padding: 15px; margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+        .instruction-input {
+            width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #ddd;
+            background: #fafafa; font-size: 14px; box-sizing: border-box; margin-bottom: 10px; outline: none;
+        }
+        .instruction-input:focus { border-color: var(--primary); background: #fff; }
+        
         .gen-btn {
-            background: #000; color: white; width: 100%; border: none; padding: 18px; border-radius: 18px;
-            font-size: 16px; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin-bottom: 30px;
-            display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s;
+            background: #000; color: white; width: 100%; border: none; padding: 16px; border-radius: 14px;
+            font-size: 16px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s;
         }
         .gen-btn:disabled { background: #999; transform: none; }
 
@@ -141,9 +151,12 @@
 
     <div id="viewExplore" class="view-container">
         
-        <button class="gen-btn" id="btnGenerate" onclick="generateCardFromInternet()">
-            <span>✨</span> Buscar Expressão Inédita (Internet)
-        </button>
+        <div class="generator-area">
+            <input type="text" id="customInstructionInput" class="instruction-input" placeholder="Opcional: Instrução (ex: nomes de frutas)">
+            <button class="gen-btn" id="btnGenerate" onclick="generateCardFromInternet()">
+                <span>✨</span> Buscar Expressão Inédita
+            </button>
+        </div>
 
         <div id="feedList">
             <div style="text-align:center; color:#999; margin-top:40px;">Carregando...</div>
@@ -277,14 +290,20 @@
                 : currentCat;
 
             const existingInCat = userCards.filter(c => c.cat === targetCat).slice(0, 15).map(c => c.en).join(", ");
+            const customInstruction = document.getElementById('customInstructionInput').value.trim();
+
+            // DIRETRIZ ATUALIZADA AQUI:
+            let instructionContext = customInstruction 
+                ? `O aluno pediu especificamente o seguinte: "${customInstruction}". VOCÊ DEVE SEGUIR ESSA INSTRUÇÃO ESTRITAMENTE dentro do tema "${targetCat}".`
+                : `Priorize palavras, vocabulários ou expressões ÚTEIS e ALTAMENTE COMUNS usadas no cotidiano americano. Busque um equilíbrio: traga tanto termos simples quanto expressões um pouco mais avançadas ou idiomáticas, desde que sejam muito aplicáveis na vida real.`;
 
             const btn = document.getElementById('btnGenerate');
             btn.disabled = true;
             btn.innerHTML = `⏳ Buscando na internet...`;
 
-            // PROMPT ATUALIZADO E MAIS RÍGIDO
             const prompt = `Você é um professor de inglês nativo dos EUA. Crie um card de estudo com um vocabulário, expressão ou frase do dia a dia americano ESTRITAMENTE pertencente ao tema "${targetCat}". 
-            É obrigatório respeitar a categoria. Por exemplo, se a categoria for "Objetos", retorne obrigatoriamente um objeto físico. Se for "Trabalho", retorne algo do mundo corporativo. Não use gírias aleatórias se a categoria não for "Gírias".
+            ${instructionContext}
+            É obrigatório respeitar a categoria (ex: se for Objeto, tem que ser um objeto). Não use gírias aleatórias se a categoria não for "Gírias".
             Regra 1: NÃO repita estas expressões: [${existingInCat}]. 
             Regra 2: Retorne APENAS um JSON válido, sem formatação markdown, sem backticks, estritamente neste formato:
             {
@@ -342,7 +361,7 @@
                 console.error(err);
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<span>✨</span> Buscar Expressão Inédita (Internet)`;
+                btn.innerHTML = `<span>✨</span> Buscar Expressão Inédita`;
             }
         }
 
@@ -403,7 +422,7 @@
             activeCardId = uid;
             const card = userCards.find(c => c.uid === uid);
             if(!card.availableExs || card.availableExs.length === 0) {
-                alert("Nenhum exemplo extra disponível para este card legado.");
+                alert("Nenhum exemplo extra disponível para este card.");
                 return;
             }
             pendingExamples = [...card.availableExs];
